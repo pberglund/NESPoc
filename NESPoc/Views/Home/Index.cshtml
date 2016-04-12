@@ -7,7 +7,6 @@
 <script src="~/Scripts/Charts/Chart.Core.js"></script>
 <script src="~/Scripts/Charts/Chart.Radar.js"></script>
 <script src="~/Scripts/Charts/Chart.Bar.js"></script>
-
 <script src="~/Scripts/Charts/Chart.Doughnut.js"></script>
 <script src="~/Scripts/Charts/Chart.Line.js"></script>
 <script src="~/Scripts/Charts/Chart.PolarArea.js"></script>
@@ -374,7 +373,9 @@
         configureChart('barChart', 'barChart', 'Bar', barData, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, 100, 'bars'); });
         configureChart('radarChart', 'radarChart', 'Radar', radarData, radarOptions, 'updateRadarChart', function (chart) { randomizePointOnChart(chart, 100, 'points'); });
         configureChart('polarChart', 'polarChart', 'PolarArea', polarData, polarOptions, 'updatePolarChart', function (chart) { randomizePointOnChart(chart, 300, null, 'segments'); });
+        pieDoughnutOptions.percentageInnerCutout = 0;
         configureChart('pieChart', 'pieChart', 'Pie', pieDoughnutData, pieDoughnutOptions, 'updatePieChart', function (chart) { randomizePointOnChart(chart, 100, null, 'segments'); });
+        pieDoughnutOptions.percentageInnerCutout = 50;
         configureChart('doughnutChart', 'doughnutChart', 'Doughnut',pieDoughnutData, pieDoughnutOptions, 'updateDoughnutChart', function(chart){randomizePointOnChart(chart, 100, null, 'segments');});
 
     });
