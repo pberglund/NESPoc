@@ -12,6 +12,5 @@ namespace NESPoc.Controllers
 		{
 			return View();
 		}
-
 	}
 }

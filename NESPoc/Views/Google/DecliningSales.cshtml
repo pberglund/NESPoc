@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "Declining Sales";
+}
+
+
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+    var barChart = null;
+    var lineChart = null;
+    var lineYearChart = null;
+    var lineDataVals = [];
+    var lineYearDataVals = [];
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+        // Set chart options
+        var options = {
+            'title': 'Declining Sales',
+            'width': 500,
+            'height': 500,
+            legend: { position: 'bottom' },
+            //trendlines: {
+            //    0: {
+            //        type: 'linear',
+            //        color: 'green',
+            //        lineWidth: 3,
+            //        opacity: 0.3,
+            //        showR2: true,
+            //        visibleInLegend: true
+            //    }
+            //}
+        };
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Branch');
+        data.addColumn('number', 'Value');
+        
+        for (var i = 1; i < 6; i++) {
+            
+            lineDataVals.push(['Branch-' + i, randomData()]);
+        }
+
+        data.addRows(lineDataVals);
+
+        var yearData = new google.visualization.DataTable();
+        yearData.addColumn('string', 'Year');
+
+        var year = 2010;
+        for (var k = 1; k < 7; k++) {
+            yearData.addColumn('number', 'Branch-' + k);
+            lineYearDataVals.push([year.toString(), randomData(), randomData(), randomData(), randomData(), randomData(), randomData()]);
+            year++;
+        }
+
+        yearData.addRows(lineYearDataVals);
+
+        configureChart(lineChart, 'line_chart_div', 'LineChart', data, options, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, options, 100); });
+        configureChart(lineYearChart, 'line_chart_year_div', 'LineChart', yearData, options, 'updateLineYearChart', function (chart) { randomizePointOnChart(chart, yearData, options, 100); });
+        options.isStacked = true;
+        options.orientation = "horizontal";
+        configureChart(barChart, 'bar_chart_div', 'BarChart', data, options, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, options, 100); });
+        configureChart(lineYearChart, 'bar_chart_year_div', 'BarChart', yearData, options, 'updateBarYearChart', function (chart) { randomizePointOnChart(chart, yearData, options, 100); });
+    }
+
+    function configureChart(chartVar, contextId, chartFunc, data, options, updateId, randomized) {
+
+        chartVar = new google.visualization[chartFunc](document.getElementById(contextId));
+        chartVar.draw(data, options);
+
+        $('#' + updateId).click(function (e) {
+            e.preventDefault();
+            randomized(chartVar);
+        });
+    }
+
+    function randomData(max) {
+        if (max == null || max < 0) {
+            max = 100;
+        }
+        
+        var val = Math.floor((Math.random() * max) + 1);
+        return val;
+    }
+
+    function randomizePointOnChart(chart, data, options, max) {
+        if (chart == null) {
+            return;
+        }
+        if (data == null) {
+            return;
+        }
+        if (options == null) {
+            return;
+        }
+        if (max == null || max < 0) {
+            max = 100;
+        }
+
+        var value = Math.floor((Math.random() * max) + 1);
+
+        var dataSet = Math.floor((Math.random() * data.getNumberOfRows()));
+
+        var label = data.getValue(dataSet, 0);
+
+        var row = [];
+
+        for (var i = 0; i < data.Lf[dataSet].c.length; i++) {
+            row.push(data.Lf[dataSet].c[i].v);
+        }
+
+        var valueToChange = Math.floor((Math.random() * row.length)) + 1;
+
+        if (valueToChange >= row.length) {
+            valueToChange = row.length - 1;
+        }
+
+
+        row[valueToChange] = value;
+
+        data.removeRow(dataSet);
+        data.insertRows(dataSet, [row]);
+
+        chart.draw(data, options);
+    }
+    
+</script>
+
+
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Line Chart - branches in specifc year</h3>
+        <div id="line_chart_div"></div>
+        <a class="btn" id="updateLineChart">Update</a>
+    </div>
+    <div class="col-md-6">
+        <h3>Line Chart - multiple branches, multiple years</h3>
+        <div id="line_chart_year_div"></div>
+        <a class="btn" id="updateLineYearChart">Update</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h3>Bar Chart - branches in specifc year</h3>
+        <div id="bar_chart_div"></div>
+        <a class="btn" id="updateBarChart">Update</a>
+    </div>
+    <div class="col-md-6">
+        <h3>Bar Chart - multiple branches, multiple years</h3>
+        <div id="bar_chart_year_div"></div>
+        <a class="btn" id="updateBarYearChart">Update</a>
+    </div>
+</div>
