@@ -85,7 +85,7 @@
         yearData.addRows(lineYearDataVals);
 
         configureChart(lineChart, 'line_chart_div', 'LineChart', data, options, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, options, 100); });
-        configureChart(lineYearChart, 'line_chart_year_div', 'LineChart', yearData, options, 'updateLineYearChart', function (chart) { randomizePointOnChart(chart, yearData, yearOptions, 100); });
+        configureChart(lineYearChart, 'line_chart_year_div', 'LineChart', yearData, options, 'updateLineYearChart', function (chart) { randomizePointOnChart(chart, yearData, options, 100); });
         options.isStacked = true;
         options.orientation = "horizontal";
         configureChart(barChart, 'bar_chart_div', 'BarChart', data, options, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, options, 100); });
