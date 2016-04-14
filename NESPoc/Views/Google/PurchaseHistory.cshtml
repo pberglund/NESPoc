@@ -18,24 +18,48 @@
     // Set a callback to run when the Google Visualization API is loaded.
     google.charts.setOnLoadCallback(drawChart);
 
-    var barOptions = {
+    var defaultBarOptions = {
         isStacked: true,
         orientation: "horizontal",
     };
+    var barOptions;
 
     var lineOptions = {
         'title': 'Yearly Purchases By Year',
         width: '100%',
         height: '100%',
-        legend: { position: 'bottom' },
+        legend: { position: 'top' },
         trendlines: {
             0: {
                 color: 'black',
             }
         },
         hAxis: {
-            format: 'yyyy'
-        },
+                title: 'Year',
+                showTextEvery: 1,
+                ticks: [{
+                    v: 0,
+                    f: '2010'
+                }, {
+                    v: 1,
+                    f: '2011'
+                }, {
+                    v: 2,
+                    f: '2012'
+                }, {
+                    v: 3,
+                    f: '2013'
+                }, {
+                    v: 4,
+                    f: '2014'
+                }, {
+                    v: 5,
+                    f: '2015'
+                }, {
+                    v: 6,
+                    f: '2016'
+                }]
+            },
     };
 
     // Callback that creates and populates a data table,
@@ -50,27 +74,22 @@
         var data = new google.visualization.DataTable();
 
 
-        data.addColumn('date', 'Year');
+        data.addColumn('number', 'Year');
         data.addColumn('number', 'Value');
         
         for (var i = 0; i < years.length; i++) {
 
-            var yearDate = new Date(years[i], 0, 1);
-
-            lineDataVals.push([yearDate, randomData()]);
+            var val = randomData();
+            lineDataVals.push([{ v: i, f: years[i].toString() }, val]);
         }
 
         data.addRows(lineDataVals);
-        var dateFormatter = new google.visualization.NumberFormat({
-            pattern: 'yyyy'
-        });
-        dateFormatter.format(data, 0);
 
         lineChart = configureChartWithTrendLines(lineChart, 'line_chart_div', 'LineChart', data, lineOptions, 'updateLineChart', 'toggleLineTrendLines', function (chart) { randomizePointOnChart(chart, data, lineOptions, 100); });
 
         
 
-        barOptions = merge_options(barOptions, lineOptions);
+        barOptions = merge_options(defaultBarOptions, lineOptions);
         
         barChart = configureChartWithTrendLines(barChart, 'bar_chart_div', 'BarChart', data, barOptions, 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizePointOnChart(chart, data, barOptions, 100); });
     }

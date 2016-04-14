@@ -31,6 +31,7 @@
             'title': 'Fluctuations over a 12-month period',
             width: '100%',
             height: '100%',
+            legend: { position: 'top' },
             hAxis: {
                 title: 'Month',
                 showTextEvery: 1,
@@ -72,11 +73,20 @@
                     f: 'Dec'
                 }]
             },
+            //trendlines: {
+            //    0: {
+            //        color: 'black',
+            //    },
+            //},
             trendlines: {
                 0: {
+                    type: 'linear',
                     color: 'black',
-                },
-            },
+                    lineWidth: 3,
+                    opacity: 0.3,
+                    showR2: false,
+                }
+            }
         };
 
         // Set chart options
@@ -94,12 +104,7 @@
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         //var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-        var today = new Date();
-        var dateTicks = [];
         for (var i = 0; i < 12; i++) {
-
-            var monthDate = new Date(today.getFullYear(), i, 1);
-            dateTicks.push(monthDate);
 
             var val = randomData();
 
