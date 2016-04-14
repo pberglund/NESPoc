@@ -110,11 +110,11 @@ function randomizePointOnChart(chart, dataVar, optionsVar, max) {
     row[valueToChange] = value;
 
     for (var j = 0; j < row.length; j++) {
-        if (row[j].toString().indexOf(':') === -1) {
+        var temp = row[j].toString();
+
+        if (temp.indexOf(':') === -1) {
             continue;
         }
-
-        var temp = row[j];
         var entries = temp.split(':');
         var newVal = '';
         for (var k = 0; k < entries.length - 1; k++) {
