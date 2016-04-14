@@ -31,17 +31,9 @@
             'title': 'Fluctuations over a 12-month period',
             width: '100%',
             height: '100%',
-            //legend: { position: 'bottom' },
             hAxis: {
-                //slantedText: true,
-                //slantedTextAngle: 45,
                 title: 'Month',
                 showTextEvery: 1,
-                trendlines: {
-                    0: {
-                        color: 'black',
-                    }
-                },
                 ticks: [{
                     v: 0,
                     f: 'Jan'
@@ -79,20 +71,25 @@
                     v: 11,
                     f: 'Dec'
                 }]
-            }
+            },
+            trendlines: {
+                0: {
+                    color: 'black',
+                },
+            },
         };
 
         // Set chart options
-        var barOptions = {
+        var defaultBarOptions = {
             isStacked: true,
             orientation: "horizontal",
         }
+        var barOptions;
 
         data.addColumn('number', 'Date');
         data.addColumn('number', 'Value');
 
         data.addColumn({ type: 'string', role: 'tooltip' });
-        //data.addColumn({ type: 'string', role: 'tooltip' });
 
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         //var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -113,14 +110,11 @@
 
         data.addRows(lineDataVals);
 
-        barOptions = merge_options(barOptions, lineOptions);
+        barOptions = merge_options(defaultBarOptions, lineOptions);
 
         lineChart = configureChart(lineChart, 'line_chart_div', 'LineChart', data, lineOptions, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, lineOptions, 100); });
 
         barChart = configureChart(barChart, 'bar_chart_div', 'BarChart', data, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, barOptions, 100); });
-
-
-
     }
 
     function getmon(dataTable, rowNum) {
@@ -138,7 +132,6 @@
         <h1>Google Charts - Purchase Fluctuation</h1>
     </div>
 </div>
-
 <div class="row">
     <div class="col-md-12">
         <h3>Line Chart</h3>

@@ -3,7 +3,7 @@
 }
 
 
-
+<script src="~/Scripts/GoogleHelpers.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 
@@ -13,6 +13,11 @@
     // Set a callback to run when the Google Visualization API is loaded.
     google.charts.setOnLoadCallback(drawChart);
 
+
+    var barChart;
+    var lineChart;
+    var pieChart;
+    var doughnutChart;
     // Callback that creates and populates a data table,
     // instantiates the pie chart, passes in the data and
     // draws it.
@@ -33,41 +38,45 @@
         // Set chart options
         var options = {
             'title': 'How Much Pizza I Ate Last Night',
-            'width': 400,
-            'height': 300
-        };
+            width: '100%',
+            height: '100%',
+        };     
 
-        // Instantiate and draw our chart, passing in some options.
-        var barChart = new google.visualization.BarChart(document.getElementById('bar_chart_div'));
-        barChart.draw(data, options);
-
-        var lineChart = new google.visualization.LineChart(document.getElementById('line_chart_div'));
-        lineChart.draw(data, options);
-
-        var pieChart = new google.visualization.PieChart(document.getElementById('pie_chart_div'));
-        pieChart.draw(data, options);
-
-        var doughnutChart = new google.visualization.PieChart(document.getElementById('doughnut_chart_div'));
+        configureChart(barChart, 'bar_chart_div', 'BarChart', data, options);
+        configureChart(barChart, 'line_chart_div', 'LineChart', data, options);
+        configureChart(barChart, 'pie_chart_div', 'PieChart', data, options);
         options.pieHole = 0.4;
-        doughnutChart.draw(data, options);
+        configureChart(barChart, 'doughnut_chart_div', 'PieChart', data, options);
     }
 </script>
 
-
+<div class="row">
+    <div class="col-md-12">
+        <h1>Google Charts - Chart Demo</h1>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6">
-        <div id="line_chart_div"></div>
+        <div class="chart_wrap">
+            <div id="line_chart_div" class="chart"></div>
+        </div>
     </div>
     <div class="col-md-6">
-        <div id="bar_chart_div"></div>
+        <div class="chart_wrap">
+            <div id="bar_chart_div" class="chart"></div>
+        </div>
     </div>
 </div>
 <div class="row">
     <div class="col-md-6">
-        <div id="pie_chart_div"></div>
+        <div class="chart_wrap">
+            <div id="pie_chart_div" class="chart"></div>
+        </div>
     </div>
     <div class="col-md-6">
-        <div id="doughnut_chart_div"></div>
+        <div class="chart_wrap">
+            <div id="doughnut_chart_div" class="chart"></div>
+        </div>
     </div>
 </div>

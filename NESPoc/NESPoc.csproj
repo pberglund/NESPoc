@@ -173,6 +173,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\GoogleChartResponsive.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -186,6 +187,7 @@
     <Content Include="Scripts\Charts\Chart.min.js" />
     <Content Include="Scripts\Charts\Chart.PolarArea.js" />
     <Content Include="Scripts\Charts\Chart.Radar.js" />
+    <Content Include="Scripts\GoogleHelpers.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
