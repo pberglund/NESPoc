@@ -13,37 +13,40 @@
 
 <style>
     .legend {
-  list-style: none;
-  /*position: absolute;*/
-  right: 8px;
-  top: 0;
-}
-.legend li {
-  display: block;
-  padding-left: 30px;
-  position: relative;
-  margin-bottom: 4px;
-  border-radius: 5px;
-  padding: 2px 8px 2px 28px;
-  font-size: 14px;
-  cursor: default;
-  -webkit-transition: background-color 200ms ease-in-out;
-  -moz-transition: background-color 200ms ease-in-out;
-  -o-transition: background-color 200ms ease-in-out;
-  transition: background-color 200ms ease-in-out;
-}
-.legend li:hover {
-  background-color: #fafafa;
-}
-.legend li span {
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 20px;
-  height: 100%;
-  border-radius: 5px;
-}
+        list-style: none;
+        /*position: absolute;*/
+        right: 8px;
+        top: 0;
+    }
+
+        .legend li {
+            display: block;
+            padding-left: 30px;
+            position: relative;
+            margin-bottom: 4px;
+            border-radius: 5px;
+            padding: 2px 8px 2px 28px;
+            font-size: 14px;
+            cursor: default;
+            -webkit-transition: background-color 200ms ease-in-out;
+            -moz-transition: background-color 200ms ease-in-out;
+            -o-transition: background-color 200ms ease-in-out;
+            transition: background-color 200ms ease-in-out;
+        }
+
+            .legend li:hover {
+                background-color: #fafafa;
+            }
+
+            .legend li span {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 20px;
+                height: 100%;
+                border-radius: 5px;
+            }
 </style>
 
 <script>
@@ -141,7 +144,7 @@
     };
 
     var randomColorFactor = function () { return Math.round(Math.random() * 255); };
-    var randomColorString = function(x) {
+    var randomColorString = function (x) {
         var initialString = 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor();
         if (x == null || x == '') {
             return initialString + ')';
@@ -150,15 +153,16 @@
         return initialString + ',' + x + ')';
     }
 
-    var defaultLineDataOptions = function(){
-        return {fillColor: randomColorString(0.5),
-        strokeColor: randomColorString(0.8),
-        highlightFill: randomColorString(0.75),
-        highlightStroke: randomColorString(1),
+    var defaultLineDataOptions = function () {
+        return {
+            fillColor: randomColorString(0.5),
+            strokeColor: randomColorString(0.8),
+            highlightFill: randomColorString(0.75),
+            highlightStroke: randomColorString(1),
         }
     };
 
-    var defaultBarDataOptions = function(){
+    var defaultBarDataOptions = function () {
         return {
             fillColor: randomColorString(0.2),
             strokeColor: randomColorString(1),
@@ -171,7 +175,7 @@
 
     $(function () {
 
-        
+
 
         var lineYearData = {
             labels: ["2010", "2011", "2012", "2013", "2014", "2015", "2016"],
@@ -200,7 +204,7 @@
         barYearData.datasets[0].data = lineYearData.datasets[0].data;
 
 
-        var lineTrendLineObj = getTrendLine(lineYearData.datasets[0].data, [0, 1, 2, 3, 4, 5, 6]); 
+        var lineTrendLineObj = getTrendLine(lineYearData.datasets[0].data, [0, 1, 2, 3, 4, 5, 6]);
         var barTrendLineObj = getTrendLine(barYearData.datasets[0].data, [0, 1, 2, 3, 4, 5, 6]);
 
         lineYearData.datasets.push({ label: "Trend Line", data: lineTrendLineObj });
@@ -223,11 +227,11 @@
             pointHighlightFill: "#fff",
             pointHighlightStroke: randomColorString(0.8),
         });
-        
+
 
         configureChart('lineChart', 'lineChart', 'Line', lineYearData, lineOptions, 'updateLineChart', function (chart, labels) { randomizePointOnChart(chart, 100, 'points', null, labels); }, 'line-chart-holder');
         configureChart('barChart', 'barChart', 'Bar', barYearData, barOptions, 'updateBarChart', function (chart, labels) { randomizePointOnChart(chart, 100, 'bars', null, labels); }, 'bar-chart-holder');
-        
+
     });
 
     function configureChart(chartVar, contextId, chartFunc, data, options, updateId, randomized, containerClass) {
@@ -244,7 +248,7 @@
         //});
 
         var select = $('#' + updateId);
-        
+
         select.change(function (e) {
             var selected = select.val();
             randomized(charts[chartVar], selected);
@@ -347,7 +351,7 @@
             <div class="">
                 <canvas id="lineChart" width="500" height="500"></canvas>
             </div>
-            
+
         </div>
         @*<a class="btn" id="updateLineChart">Update</a>*@
         <select id="updateLineChart">

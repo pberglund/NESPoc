@@ -22,10 +22,33 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            Chart JS <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("All Chart Types", "Index", "ChartJs")</li>
+                            <li>@Html.ActionLink("Purchase History", "PurchaseHistory", "ChartJs")</li>
+                            <li>@Html.ActionLink("Purchase Fluctuation", "PurchaseFluctuation", "ChartJs")</li>
+                            <li>@Html.ActionLink("Declining Sales", "DecliningSales", "ChartJs")</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            Google Charts <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li>@Html.ActionLink("Many Chart Types", "Index", "Google")</li>
+                            <li>@Html.ActionLink("Purchase History", "PurchaseHistory", "Google")</li>
+                            <li>@Html.ActionLink("Purchase Fluctuation", "PurchaseFluctuation", "Google")</li>
+                            <li>@Html.ActionLink("Declining Sales", "DecliningSales", "Google")</li>
+                        </ul>
+                    </li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                    @Html.Partial("_LoginPartial")
+                </div>
             </div>
-        </div>
     </div>
     <div class="container body-content">
         @RenderBody()

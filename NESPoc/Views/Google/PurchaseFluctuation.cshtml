@@ -2,278 +2,119 @@
     ViewBag.Title = "Purchase Fluctuation";
 }
 
-<script src="~/Scripts/jquery-1.10.2.min.js"></script>
-<script src="~/Scripts/Charts/Chart.min.js"></script>
-<script src="~/Scripts/Charts/Chart.Core.js"></script>
-<script src="~/Scripts/Charts/Chart.Radar.js"></script>
-<script src="~/Scripts/Charts/Chart.Bar.js"></script>
-<script src="~/Scripts/Charts/Chart.Doughnut.js"></script>
-<script src="~/Scripts/Charts/Chart.Line.js"></script>
-<script src="~/Scripts/Charts/Chart.PolarArea.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/Scripts/GoogleHelpers.js"></script>
+<script type="text/javascript">
 
-<style>
-    .legend {
-        list-style: none;
-        /*position: absolute;*/
-        right: 8px;
-        top: 0;
-    }
+    var barChart = null;
+    var lineChart = null;
+    var lineYearChart = null;
+    var lineDataVals = [];
+    var lineYearDataVals = [];
 
-        .legend li {
-            display: block;
-            padding-left: 30px;
-            position: relative;
-            margin-bottom: 4px;
-            border-radius: 5px;
-            padding: 2px 8px 2px 28px;
-            font-size: 14px;
-            cursor: default;
-            -webkit-transition: background-color 200ms ease-in-out;
-            -moz-transition: background-color 200ms ease-in-out;
-            -o-transition: background-color 200ms ease-in-out;
-            transition: background-color 200ms ease-in-out;
-        }
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
 
-            .legend li:hover {
-                background-color: #fafafa;
-            }
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
 
-            .legend li span {
-                display: block;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 20px;
-                height: 100%;
-                border-radius: 5px;
-            }
-</style>
-
-<script>
-    var lineOptions = {
-
-        ///Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
-
-        //String - Colour of the grid lines
-        scaleGridLineColor: "rgba(0,0,0,.05)",
-
-        //Number - Width of the grid lines
-        scaleGridLineWidth: 1,
-
-        //Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-
-        //Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
-
-        //Boolean - Whether the line is curved between points
-        bezierCurve: true,
-
-        //Number - Tension of the bezier curve between points
-        bezierCurveTension: 0.4,
-
-        //Boolean - Whether to show a dot for each point
-        pointDot: true,
-
-        //Number - Radius of each point dot in pixels
-        pointDotRadius: 4,
-
-        //Number - Pixel width of point dot stroke
-        pointDotStrokeWidth: 1,
-
-        //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-        pointHitDetectionRadius: 20,
-
-        //Boolean - Whether to show a stroke for datasets
-        datasetStroke: true,
-
-        //Number - Pixel width of dataset stroke
-        datasetStrokeWidth: 2,
-
-        //Boolean - Whether to fill the dataset with a colour
-        datasetFill: true,
-
-        //String - A legend template
-        legendTemplate: "<ul class=\"legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-
-    };
-
-    var barOptions = {
-        //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-        scaleBeginAtZero: true,
-
-        //Boolean - Whether grid lines are shown across the chart
-        scaleShowGridLines: true,
-
-        //String - Colour of the grid lines
-        scaleGridLineColor: "rgba(0,0,0,.05)",
-
-        //Number - Width of the grid lines
-        scaleGridLineWidth: 1,
-
-        //Boolean - Whether to show horizontal lines (except X axis)
-        scaleShowHorizontalLines: true,
-
-        //Boolean - Whether to show vertical lines (except Y axis)
-        scaleShowVerticalLines: true,
-
-        //Boolean - If there is a stroke on each bar
-        barShowStroke: true,
-
-        //Number - Pixel width of the bar stroke
-        barStrokeWidth: 2,
-
-        //Number - Spacing between each of the X value sets
-        barValueSpacing: 5,
-
-        //Number - Spacing between data sets within X values
-        barDatasetSpacing: 1,
-
-        //String - A legend template
-        legendTemplate: "<ul class=\"legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-
-    }
-
-    var charts = {
-        lineChart: null,
-        lineChartYear: null,
-        barChart: null,
-        barChartYear: null,
-
-    };
-
-    $(function () {
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
 
 
+        var data = new google.visualization.DataTable();
 
-        var lineYearData = {
-            labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-            datasets: [
-                {
-                    label: "Customer 42",
-                    fillColor: "rgba(151,187,205,0.2)",
-                    strokeColor: "rgba(151,187,205,1)",
-                    pointColor: "rgba(151,187,205,1)",
-                    pointStrokeColor: "#fff",
-                    pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(151,187,205,1)",
-                    data: []
+        // Set chart options
+        var lineOptions = {
+            'title': 'Declining Sales',
+            'width': 500,
+            'height': 500,
+            legend: { position: 'bottom' },
+            hAxis: {
+                title: 'Months',
+                slantedText: true,
+                slantedTextAngle: 45,
+                textStyle: {
+                    fontSize: 10
                 },
-                //{
-                //    label: "Customer 43",
-                //    fillColor: "rgba(220,220,220,0.2)",
-                //    strokeColor: "rgba(220,220,220,1)",
-                //    pointColor: "rgba(220,220,220,1)",
-                //    pointStrokeColor: "#fff",
-                //    pointHighlightFill: "#fff",
-                //    pointHighlightStroke: "rgba(220,220,220,1)",
-                //    data: []
-                //}
-            ]
+                format: 'MMMM'
+            },
         };
 
+        // Set chart options
+        var barOptions = {
+            isStacked: true,
+            orientation: "horizontal",
+        }
 
-        var barYearData = {
-            labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-            datasets: [
-                {
-                    label: "Customer 42",
-                    fillColor: "rgba(151,187,205,0.5)",
-                    strokeColor: "rgba(151,187,205,0.8)",
-                    highlightFill: "rgba(151,187,205,0.75)",
-                    highlightStroke: "rgba(151,187,205,1)",
-                    data: []
-                }
-            ]
-        };
+        barOptions = merge_options(barOptions, lineOptions);
+        
+        //var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        
+        data.addColumn('date', 'Month');
+        data.addColumn('number', 'Value');
 
+        var today = new Date();
 
-        randomizeData(lineYearData);
-        barYearData.datasets[0].data = lineYearData.datasets[0].data;
+        for (var i = 0; i < 12; i++) {
 
+            var monthDate = new Date(today.getFullYear(), i + 1, 1);
 
-        configureChart('lineChart', 'lineChart', 'Line', lineYearData, lineOptions, 'updateLineChart', function (chart) { randomizePointOnChart(chart, 100, 'points'); }, 'line-chart-holder');
-        configureChart('barChart', 'barChart', 'Bar', barYearData, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, 100, 'bars'); }, 'bar-chart-holder');
+            lineDataVals.push([monthDate, randomData()]);
+        }
 
-    });
-
-    function configureChart(chartVar, contextId, chartFunc, data, options, updateId, randomized, containerClass) {
-        var ctx = $("#" + contextId).get(0).getContext("2d");
-
-        charts[chartVar] = new Chart(ctx)[chartFunc](data, options);
-
-        $('.' + containerClass).append(charts[chartVar].generateLegend());
-
-
-        $('#' + updateId).click(function (e) {
-            e.preventDefault();
-            randomized(charts[chartVar]);
+        data.addRows(lineDataVals);
+        var dateFormatter = new google.visualization.NumberFormat({
+            pattern: 'MMMM'
         });
+        dateFormatter.format(data, 0);
+
+        lineChart = configureChart(lineChart, 'line_chart_div', 'LineChart', data, lineOptions, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, lineOptions, 100); });
+        
+        barChart = configureChart(barChart, 'bar_chart_div', 'BarChart', data, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, barOptions, 100); });
+
+        $("#toggleTrendLines").click(function(e) {
+            e.preventDefault();
+            toggleTrendLines(lineChart, data, lineOptions);
+            toggleTrendLines(barChart, data,barOptions);
+        });
+        
     }
 
-    function randomizeData(data, max) {
-        if (data == null || data.datasets == null) {
-            return;
-        }
-        if (max == null || max < 0) {
-            max = 100;
-        }
-        for (var j = 0; j < data.datasets.length; j++) {
-            for (var i = 0; i < data.labels.length; i++) {
-                data.datasets[j].data.push(Math.floor((Math.random() * max) + 1));
-            }
-        }
+    function toggleTrendLines(chart, data, options) {
 
-    }
-
-    function randomizePointOnChart(chart, max, property, group) {
-        if (chart == null) {
-            return;
-        }
-
-        if (group == null || group == '') {
-            group = 'datasets';
-        }
-
-        if (max == null || max < 0) {
-            max = 100;
-        }
-
-        var value = Math.floor((Math.random() * max) + 1);
-
-        var dataSet = Math.floor((Math.random() * chart[group].length));
-
-        if (group != 'datasets') {
-            chart[group][dataSet].value = value;
+        if (options.trendlines != null) {
+            options.trendlines = null;
         } else {
-            var dataIndex = Math.floor((Math.random() * chart[group][dataSet][property].length));
-            chart.datasets[dataSet][property][dataIndex].value = value;
+            options.trendlines = {
+                0: {
+                    color: 'black',
+                }
+            };
         }
 
-        chart.update();
+        chart.draw(data, options);
     }
+
 </script>
 
-<div class="row">
-    <div class="col-md-6">
-        <h2>Line chart - fluctuations over a 12-month period</h2>
-        <div class="line-chart-holder">
-            <div class="">
-                <canvas id="lineChart" width="500" height="500"></canvas>
-            </div>
 
-        </div>
+
+<div class="row">
+    <div class="col-md-2">
+        <h3>Actions</h3>
+        <a class="btn" id="toggleTrendLines">Toggle Trendlines</a>
+    </div>
+    <div class="col-md-5">
+        <h3>Line Chart - fluctuations over a 12-month period</h3>
+        <div id="line_chart_div"></div>
         <a class="btn" id="updateLineChart">Update</a>
     </div>
-    <div class="col-md-6">
-        <h2>Bar chart - fluctuations over a 12-month period</h2>
-        <div class="bar-chart-holder">
-            <div class="">
-                <canvas id="barChart" width="500" height="500"></canvas>
-            </div>
-
-        </div>
+    <div class="col-md-5">
+        <h3>Bar Chart - fluctuations over a 12-month period</h3>
+        <div id="bar_chart_div"></div>
         <a class="btn" id="updateBarChart">Update</a>
     </div>
 </div>
