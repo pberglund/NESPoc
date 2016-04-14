@@ -37,6 +37,11 @@
                 //slantedTextAngle: 45,
                 title: 'Month',
                 showTextEvery: 1,
+                trendlines: {
+                    0: {
+                        color: 'black',
+                    }
+                },
                 ticks: [{
                     v: 0,
                     f: 'Jan'
@@ -74,11 +79,6 @@
                     v: 11,
                     f: 'Dec'
                 }]
-            },
-            trendlines: {
-                0: {
-                    color: 'black',
-                }
             }
         };
 
@@ -88,13 +88,14 @@
             orientation: "horizontal",
         }
 
-        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Date');
         data.addColumn('number', 'Value');
 
         data.addColumn({ type: 'string', role: 'tooltip' });
         //data.addColumn({ type: 'string', role: 'tooltip' });
 
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        //var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
         var today = new Date();
         var dateTicks = [];
@@ -107,38 +108,20 @@
 
             var tooltip = months[i] + ": " + val;
 
-            lineDataVals.push([monthDate, val, tooltip]);
+            lineDataVals.push([{ v: i, f: i.toString() }, val, tooltip]);
         }
 
         data.addRows(lineDataVals);
 
-        // have all the dates and values, now need to set the values based on the date in a view
-        // in conjunction with the h-axis options this will generate the month names
-
-        var dView = new google.visualization.DataView(data);
-        dView.setColumns([{
-            calc: getmon,
-            type: 'number',
-            label: "Month"
-        },
-        1,2]);
-        
-        lineOptions.ticks = dateTicks;
-
         barOptions = merge_options(barOptions, lineOptions);
 
-        lineChart = configureChart(lineChart, 'line_chart_div', 'LineChart', dView, lineOptions, 'updateLineChart', function (chart) { randomizePointOnChart(chart, dView, lineOptions, 100); });
-        
-        barChart = configureChart(barChart, 'bar_chart_div', 'BarChart', dView, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, dView, barOptions, 100); });
+        lineChart = configureChart(lineChart, 'line_chart_div', 'LineChart', data, lineOptions, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, lineOptions, 100); });
 
-        $("#toggleTrendLines").click(function(e) {
-            e.preventDefault();
-            toggleTrendLines(lineChart, dview, lineOptions);
-            toggleTrendLines(barChart, data,barOptions);
-        });
-        
+        barChart = configureChart(barChart, 'bar_chart_div', 'BarChart', data, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, barOptions, 100); });
+
+
+
     }
-
 
     function getmon(dataTable, rowNum) {
         var rd = dataTable.getValue(rowNum, 0);
@@ -146,21 +129,6 @@
         return {
             v: rm
         };
-    }
-
-    function toggleTrendLines(chart, data, options) {
-
-        if (options.trendlines != null) {
-            options.trendlines = null;
-        } else {
-            options.trendlines = {
-                0: {
-                    color: 'black',
-                }
-            };
-        }
-
-        chart.draw(data, options);
     }
 
 </script>
@@ -173,12 +141,6 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h3>Actions</h3>
-        <a class="btn" id="toggleTrendLines">Toggle Trendlines</a>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-12">
         <h3>Line Chart</h3>
         <div class="chart_wrap">
             <div id="line_chart_div" class="chart"></div>
@@ -188,10 +150,10 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-              <h3>Bar Chart</h3>
-              <div class="chart_wrap">
-                  <div id="bar_chart_div" class="chart"></div>
-              </div>
-              <a class="btn" id="updateBarChart">Update</a>
-          </div>
+        <h3>Bar Chart</h3>
+        <div class="chart_wrap">
+            <div id="bar_chart_div" class="chart"></div>
+        </div>
+        <a class="btn" id="updateBarChart">Update</a>
+    </div>
 </div>
