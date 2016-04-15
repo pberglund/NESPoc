@@ -14,10 +14,12 @@
     google.charts.setOnLoadCallback(drawChart);
 
 
-    var barChart;
-    var lineChart;
-    var pieChart;
-    var doughnutChart;
+    var barObj;
+    var lineObj;
+    var pieObj;
+    var doughnutObj;
+    var comboObj;
+    var areaObj;
     // Callback that creates and populates a data table,
     // instantiates the pie chart, passes in the data and
     // draws it.
@@ -27,12 +29,13 @@
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Topping');
         data.addColumn('number', 'Slices');
+        data.addColumn('number', 'Times');
         data.addRows([
-          ['Mushrooms', 3],
-          ['Onions', 1],
-          ['Olives', 1],
-          ['Zucchini', 1],
-          ['Pepperoni', 2]
+          ['Mushrooms', 3, 1],
+          ['Onions', 1, 4],
+          ['Olives', 1, 3],
+          ['Zucchini', 1, 2],
+          ['Pepperoni', 2, 5]
         ]);
 
         // Set chart options
@@ -40,13 +43,50 @@
             'title': 'How Much Pizza I Ate Last Night',
             width: '100%',
             height: '100%',
+            legend: { position: 'top' },
         };     
 
-        configureChart(barChart, 'bar_chart_div', 'BarChart', data, options);
-        configureChart(barChart, 'line_chart_div', 'LineChart', data, options);
-        configureChart(barChart, 'pie_chart_div', 'PieChart', data, options);
+        lineObj = {
+            data: data,
+            options: options,
+        }
+
+        configureChart(lineObj, 'bar_chart_div', 'BarChart');
+
+        barObj = {
+            data: data,
+            options: options,
+        }
+        configureChart(barObj, 'line_chart_div', 'LineChart');
+
+        pieObj = {
+            data: data,
+            options: options,
+        }
+        configureChart(pieObj, 'pie_chart_div', 'PieChart');
+
         options.pieHole = 0.4;
-        configureChart(barChart, 'doughnut_chart_div', 'PieChart', data, options);
+        doughnutObj = {
+            data: data,
+            options: options,
+        }
+        configureChart(doughnutObj, 'doughnut_chart_div', 'PieChart');
+        areaObj = {
+            data: data,
+            options: options,
+        }
+        configureChart(areaObj, 'area_chart_div', 'AreaChart');
+        
+        options.seriesType = 'bars';
+        options.series = {
+            1: { type: 'line' },
+        }
+        
+        comboObj = {
+            data: data,
+            options: options,
+        }
+        configureChart(comboObj, 'combo_chart_div', 'ComboChart');
     }
 </script>
 
@@ -58,11 +98,13 @@
 
 <div class="row">
     <div class="col-md-6">
+        <h4>Line</h4>
         <div class="chart_wrap">
             <div id="line_chart_div" class="chart"></div>
         </div>
     </div>
     <div class="col-md-6">
+        <h4>Bar</h4>
         <div class="chart_wrap">
             <div id="bar_chart_div" class="chart"></div>
         </div>
@@ -70,13 +112,29 @@
 </div>
 <div class="row">
     <div class="col-md-6">
+        <h4>Pie</h4>
         <div class="chart_wrap">
             <div id="pie_chart_div" class="chart"></div>
         </div>
     </div>
     <div class="col-md-6">
+        <h4>Doughnut</h4>
         <div class="chart_wrap">
             <div id="doughnut_chart_div" class="chart"></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Combo</h4>
+        <div class="chart_wrap">
+            <div id="combo_chart_div" class="chart"></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h4>Area</h4>
+        <div class="chart_wrap">
+            <div id="area_chart_div" class="chart"></div>
         </div>
     </div>
 </div>

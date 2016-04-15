@@ -7,9 +7,10 @@
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 
-    var barChart = null;
-    var lineChart = null;
-    var lineYearChart = null;
+    var barObj = null;
+    var lineObj = null;
+    var lineYearObj = null;
+    var barYearObj = null;
     var lineDataVals = [];
     var lineYearDataVals = [];
 
@@ -52,50 +53,75 @@
             },
             trendlines: {
                 0: {
-                    type: 'linear',
+                    labelInLegend: 'Trend Line',
+                    visibleInLegend: true,
+
+                    type: 'polynomial',
+                    //degree: 4,
+                    //type: 'linear',
+                    //type: 'exponential',
                     color: 'black',
                     opacity: 0.3,
                 }
-            }
+            },
+            crosshair: { trigger: "both", orientation: "both" },
         };
 
+        var barOptions;
+        var defaultBarOptions = {
+            isStacked: true,
+            orientation: "horizontal",
+        }
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('number', 'Branch');
-        data.addColumn('number', 'Value');
+        barOptions = merge_options(defaultBarOptions, options);
+
+        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 0, random = false})))').done(function (d) {
+
+            var massagedData = massageData(d);
+
+            var data = google.visualization.arrayToDataTable(massagedData);
+
+            lineObj = {
+                data: data,
+                options: options,
+            }
+
+            lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
+
+            barObj = {
+                data: data,
+                options: barOptions,
+            }
+
+
+            barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
+        });
+
         
-        for (var i = 1; i < 6; i++) {
-            
-            lineDataVals.push([i, randomData()]);
-        }
+        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 1, random = false})))').done(function (d) {
 
-        data.addRows(lineDataVals);
+            var massagedData = massageYearData(d);
 
-        var yearData = new google.visualization.DataTable();
-        yearData.addColumn('string', 'Year');
+            var yearData = google.visualization.arrayToDataTable(massagedData);
 
-        var year = 2010;
-        for (var k = 1; k < 7; k++) {
-            yearData.addColumn('number', 'Branch-' + k);
-            
-            lineYearDataVals.push([year.toString(), randomData(), randomData(), randomData(), randomData(), randomData(), randomData()]);
-            year++;
-        }
+            lineYearObj = {
+                data: yearData,
+                options: options,
+            }
 
-        yearData.addRows(lineYearDataVals);
+            barYearObj = {
+                data: yearData,
+                options: barOptions,
+            }
 
-        configureChart(lineChart, 'line_chart_div', 'LineChart', data, options, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, options, 100); });
-        configureChart(lineYearChart, 'line_chart_year_div', 'LineChart', yearData, options, 'updateLineYearChart', function (chart) { randomizePointOnChart(chart, yearData, options, 100); });
-        options.isStacked = true;
-        options.orientation = "horizontal";
-        configureChart(barChart, 'bar_chart_div', 'BarChart', data, options, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, options, 100); });
-        configureChart(lineYearChart, 'bar_chart_year_div', 'BarChart', yearData, options, 'updateBarYearChart', function (chart) { randomizePointOnChart(chart, yearData, options, 100); });
+            lineYearObj = configureChart(lineYearObj, 'line_chart_year_div', 'LineChart', 'updateLineYearChart', function (chart) { randomizeData(chart, 1, true, function (e) { return massageYearData(e); }); });
+
+            barYearObj = configureChart(barYearObj, 'bar_chart_year_div', 'BarChart', 'updateBarYearChart', function (chart) { randomizeData(chart, 1, true, function (e) { return massageYearData(e); }); });
+        });
     }
-
-    
-
-    
 </script>
+
+
 
 <div class="row">
     <div class="col-md-12">

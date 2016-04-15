@@ -6,120 +6,150 @@
 <script src="~/Scripts/GoogleHelpers.js"></script>
 <script type="text/javascript">
 
-    var barChart = null;
-    var lineChart = null;
-    var lineYearChart = null;
+    var barObj = null;
+    var lineObj = null;
     var lineDataVals = [];
-    var lineYearDataVals = [];
-
+    
     // Load the Visualization API and the corechart package.
     google.charts.load('current', { 'packages': ['corechart'] });
 
     // Set a callback to run when the Google Visualization API is loaded.
     google.charts.setOnLoadCallback(drawChart);
 
+    // Set chart options
+    var lineOptions = {
+        'title': 'Fluctuations over a 12-month period',
+        width: '100%',
+        height: '100%',
+        legend: { position: 'top' },
+        hAxis: {
+            title: 'Month',
+            showTextEvery: 1,
+            ticks: [{
+                v: 0,
+                f: 'Jan'
+            }, {
+                v: 1,
+                f: 'Feb'
+            }, {
+                v: 2,
+                f: 'Mar'
+            }, {
+                v: 3,
+                f: 'Apr'
+            }, {
+                v: 4,
+                f: 'May'
+            }, {
+                v: 5,
+                f: 'Jun'
+            }, {
+                v: 6,
+                f: 'Jul'
+            }, {
+                v: 7,
+                f: 'Aug'
+            }, {
+                v: 8,
+                f: 'Sep'
+            }, {
+                v: 9,
+                f: 'Oct'
+            }, {
+                v: 10,
+                f: 'Nov'
+            }, {
+                v: 11,
+                f: 'Dec'
+            }]
+        },
+        //trendlines: {
+        //    0: {
+        //        color: 'black',
+        //    },
+        //},
+        trendlines: {
+            0: {
+                type: 'linear',
+                color: 'black',
+                lineWidth: 3,
+                opacity: 0.3,
+                showR2: false,
+            }
+        }
+    };
+
+    // Set chart options
+    var defaultBarOptions = {
+        isStacked: true,
+        orientation: "horizontal",
+    }
+    var barOptions;
+
     // Callback that creates and populates a data table,
     // instantiates the pie chart, passes in the data and
     // draws it.
     function drawChart() {
+        //data.addColumn('number', 'Date');
+        //data.addColumn('number', 'Value');
+
+        //data.addColumn({ type: 'string', role: 'tooltip' });
+
+        //var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        ////var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        //for (var i = 0; i < 12; i++) {
+
+        //    var val = randomData();
+
+        //    var tooltip = months[i] + ": " + val;
+
+        //    lineDataVals.push([{ v: i, f: i.toString() }, val, tooltip]);
+        //}
+
+        //data.addRows(lineDataVals);
+
+        //barOptions = merge_options(defaultBarOptions, lineOptions);
+        
+        //lineObj = {
+        //    data: data,
+        //    options: lineOptions,
+        //}
+
+        //lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function (chartObj) { randomizePointOnChart(chartObj, 100); });
+
+        //barObj = {
+        //    data: data,
+        //    options: barOptions,
+        //}
+        //barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function (chartObj) { randomizePointOnChart(chartObj, 100); });
 
 
-        var data = new google.visualization.DataTable();
 
-        // Set chart options
-        var lineOptions = {
-            'title': 'Fluctuations over a 12-month period',
-            width: '100%',
-            height: '100%',
-            legend: { position: 'top' },
-            hAxis: {
-                title: 'Month',
-                showTextEvery: 1,
-                ticks: [{
-                    v: 0,
-                    f: 'Jan'
-                }, {
-                    v: 1,
-                    f: 'Feb'
-                }, {
-                    v: 2,
-                    f: 'Mar'
-                }, {
-                    v: 3,
-                    f: 'Apr'
-                }, {
-                    v: 4,
-                    f: 'May'
-                }, {
-                    v: 5,
-                    f: 'Jun'
-                }, {
-                    v: 6,
-                    f: 'Jul'
-                }, {
-                    v: 7,
-                    f: 'Aug'
-                }, {
-                    v: 8,
-                    f: 'Sep'
-                }, {
-                    v: 9,
-                    f: 'Oct'
-                }, {
-                    v: 10,
-                    f: 'Nov'
-                }, {
-                    v: 11,
-                    f: 'Dec'
-                }]
-            },
-            //trendlines: {
-            //    0: {
-            //        color: 'black',
-            //    },
-            //},
-            trendlines: {
-                0: {
-                    type: 'linear',
-                    color: 'black',
-                    lineWidth: 3,
-                    opacity: 0.3,
-                    showR2: false,
-                }
+        var data;
+        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 2, random = false})))').done(function (d) {
+
+            var massagedData = massageMonthData(d);
+
+            data = google.visualization.arrayToDataTable(massagedData);
+
+            lineObj = {
+                data: data,
+                options: lineOptions,
             }
-        };
 
-        // Set chart options
-        var defaultBarOptions = {
-            isStacked: true,
-            orientation: "horizontal",
-        }
-        var barOptions;
+            lineObj = configureChartWithTrendLines(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', 'toggleLineTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageMonthData(e); }); });
 
-        data.addColumn('number', 'Date');
-        data.addColumn('number', 'Value');
+            barOptions = merge_options(defaultBarOptions, lineOptions);
 
-        data.addColumn({ type: 'string', role: 'tooltip' });
+            barObj = {
+                data: data,
+                options: barOptions,
+            }
 
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        //var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageMonthData(e); }); });
+        });
 
-        for (var i = 0; i < 12; i++) {
-
-            var val = randomData();
-
-            var tooltip = months[i] + ": " + val;
-
-            lineDataVals.push([{ v: i, f: i.toString() }, val, tooltip]);
-        }
-
-        data.addRows(lineDataVals);
-
-        barOptions = merge_options(defaultBarOptions, lineOptions);
-
-        lineChart = configureChart(lineChart, 'line_chart_div', 'LineChart', data, lineOptions, 'updateLineChart', function (chart) { randomizePointOnChart(chart, data, lineOptions, 100); });
-
-        barChart = configureChart(barChart, 'bar_chart_div', 'BarChart', data, barOptions, 'updateBarChart', function (chart) { randomizePointOnChart(chart, data, barOptions, 100); });
     }
 
     function getmon(dataTable, rowNum) {

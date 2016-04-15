@@ -7,8 +7,8 @@
 <script src="~/Scripts/GoogleHelpers.js"></script>
 <script type="text/javascript">
 
-    var barChart = null;
-    var lineChart = null;
+    var barObj = null;
+    var lineObj = null;
     var lineDataVals = [];
     
 
@@ -67,34 +67,32 @@
     // draws it.
     function drawChart() {
         
-        
+        var data;
+        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 0, random = false})))').done(function (d) {
 
-        var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016];
+            var massagedData = massageData(d);
 
-        var data = new google.visualization.DataTable();
+            data = google.visualization.arrayToDataTable(massagedData);
 
+            lineObj = {
+                data: data,
+                options: lineOptions,
+            }
 
-        data.addColumn('number', 'Year');
-        data.addColumn('number', 'Value');
-        
-        for (var i = 0; i < years.length; i++) {
+            lineObj = configureChartWithTrendLines(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', 'toggleLineTrendLines', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
 
-            var val = randomData();
-            lineDataVals.push([{ v: i, f: years[i].toString() }, val]);
-        }
+            barOptions = merge_options(defaultBarOptions, lineOptions);
 
-        data.addRows(lineDataVals);
+            barObj = {
+                data: data,
+                options: barOptions,
+            }
 
-        lineChart = configureChartWithTrendLines(lineChart, 'line_chart_div', 'LineChart', data, lineOptions, 'updateLineChart', 'toggleLineTrendLines', function (chart) { randomizePointOnChart(chart, data, lineOptions, 100); });
-
-        
-
-        barOptions = merge_options(defaultBarOptions, lineOptions);
-        
-        barChart = configureChartWithTrendLines(barChart, 'bar_chart_div', 'BarChart', data, barOptions, 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizePointOnChart(chart, data, barOptions, 100); });
+            barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
+        });
     }
 
-    
+
 </script>
 
 <div class="row">

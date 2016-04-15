@@ -1,55 +1,115 @@
 ﻿
-function toggleTrendLines(chart, dataVal, optionsVal) {
+function toggleTrendLines(chartObj) {
 
-    if (optionsVal.trendlines != null) {
-        optionsVal.trendlines = null;
+    if (chartObj.options.trendlines != null) {
+        chartObj.options.trendlines = null;
     } else {
-        optionsVal.trendlines = {
+        chartObj.options.trendlines = {
             0: {
                 color: 'black',
             }
         };
     }
     console.log('trend draw');
-    drawChartHelper(chart, dataVal, optionsVal);
+    drawChartHelper(chartObj);
 }
 
-function configureChartWithTrendLines(chartVar, contextId, chartFunc, data, options, updateId, trendLineId, randomized) {
-    chartVar = configureChart(chartVar, contextId, chartFunc, data, options, updateId, randomized);
+function configureChartWithTrendLines(chartObj, contextId, chartFunc, updateId, trendLineId, randomized) {
+    chartObj = configureChart(chartObj, contextId, chartFunc, updateId, randomized);
     
     if (trendLineId != null) {
 
         $('#' + trendLineId).unbind().click(function (e) {
             e.preventDefault();
-            toggleTrendLines(chartVar, data, options);
+            toggleTrendLines(chartObj);
                 
             });
         
     }
-    return chartVar;
+    return chartObj;
 }
 
-function configureChart(chartVar, contextId, chartFunc, dataVar, optionsVar, updateId, randomized) {
+function configureChart(chartObj, contextId, chartFunc, updateId, randomized) {
 
-    chartVar = new google.visualization[chartFunc](document.getElementById(contextId));
+    chartObj.chart = new google.visualization[chartFunc](document.getElementById(contextId));
     console.log('configure draw');
-    drawChartHelper(chartVar, dataVar, optionsVar);
+    drawChartHelper(chartObj);
 
     if (updateId != null) {
 
         $('#' + updateId).unbind().click(function(e) {
             e.preventDefault();
-            randomized(chartVar);
+            randomized(chartObj);
         });
     }
 
     $(window).resize(function () {
         console.log('resize draw');
-        drawChartHelper(chartVar, dataVar, optionsVar);
+        drawChartHelper(chartObj);
     });
     
 
-    return chartVar;
+    return chartObj;
+}
+
+
+function massageData(d) {
+    var data = [];
+    for (var i = 0; i < d.length; i++) {
+        data.push([{ v: i, f: d[i][0].toString() }, d[i][1]]);
+    }
+    return data;
+}
+
+function massageMonthData(d) {
+    var data = [];
+
+    data.push([d[0][0], d[0][1], { type: 'string', role: 'tooltip' }]);
+
+    for (var i = 1; i < d.length; i++) {
+        var subData = [];
+        for (var j = 0; j < d[i].length; j++) {
+            subData.push(d[i][j]);
+        }
+        data.push(subData);
+    }
+    return data;
+}
+
+function massageYearData(d) {
+    var data = [];
+    for (var i = 0; i < d.length; i++) {
+        var subData = [];
+        subData.push(d[i][0].toString());
+        for (var j = 1; j < d[i].length; j++) {
+            subData.push(d[i][j]);
+        }
+        data.push(subData);
+    }
+    return data;
+}
+
+
+function randomizeData(chartObj, type, random, massageFunc) {
+
+    if (chartObj == null) {
+        return;
+    }
+
+    if (type == null) {
+        type = 0;
+    }
+    if (random == null) {
+        random = false;
+    }
+
+    $.post('/Google/PurchaseHistoryData?type=' + type + "&random=" + random).done(function (d) {
+
+        var massagedData = massageFunc(d);
+        var newData = google.visualization.arrayToDataTable(massagedData);
+        chartObj.data = newData;
+        drawChartHelper(chartObj);
+    });
 }
 
 function randomData(max) {
@@ -61,14 +121,14 @@ function randomData(max) {
     return val;
 }
 
-function randomizePointOnChart(chart, dataVar, optionsVar, max) {
-    if (chart == null) {
+function randomizePointOnChart(chartObj, max) {
+    if (chartObj.chart == null) {
         return;
     }
-    if (dataVar == null) {
+    if (chartObj.data == null) {
         return;
     }
-    if (optionsVar == null) {
+    if (chartObj.options == null) {
         return;
     }
     if (max == null || max < 0) {
@@ -77,11 +137,11 @@ function randomizePointOnChart(chart, dataVar, optionsVar, max) {
 
     var value = Math.floor((Math.random() * max) + 1);
 
-    var dataSet = Math.floor((Math.random() * dataVar.getNumberOfRows()));
+    var dataSet = Math.floor((Math.random() * chartObj.data.getNumberOfRows()));
 
     var row = [];
 
-    var dataSection = dataVar.Lf[dataSet].c;
+    var dataSection = chartObj.data.Lf[dataSet].c;
     
 
     if (dataSection == null) {
@@ -127,11 +187,11 @@ function randomizePointOnChart(chart, dataVar, optionsVar, max) {
     }
 
     
-        dataVar.removeRow(dataSet);
-        dataVar.insertRows(dataSet, [row]);
+    chartObj.data.removeRow(dataSet);
+    chartObj.data.insertRows(dataSet, [row]);
     
     console.log('random draw');
-    drawChartHelper(chart, dataVar, optionsVar);
+    drawChartHelper(chartObj);
 }
 function merge_options(obj1, obj2) {
     var obj3 = {};
@@ -145,14 +205,14 @@ function isNumeric(n) {
 }
 
 var drawing = false;
-function drawChartHelper(chartVar, dataVal, optionsVal) {
+function drawChartHelper(chartObj) {
 
     if (drawing) {
         return;
     }
-    google.visualization.events.addListener(chartVar, 'ready',
+    google.visualization.events.addListener(chartObj.chart, 'ready',
         function () {
             drawing = false;
         });
-    chartVar.draw(dataVal, optionsVal);
+    chartObj.chart.draw(chartObj.data, chartObj.options);
 }
