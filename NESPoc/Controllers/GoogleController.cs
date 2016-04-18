@@ -117,10 +117,17 @@ namespace NESPoc.Controllers
 					}
 					break;
 				case 3:
-					data.Add(new[] { "Branch", "Value" });
-					for (int j = 1; j < branches.Length + 1; j++)
+					List<string> branchAndValueCols = new List<string>()
 					{
-						data.Add(new[]{j, GetRandomNumber(j, random)});
+						"Branch", "Value", "tooltip"
+					};
+
+					data.Add(branchAndValueCols.ToArray());
+					for (int j = 0; j < branches.Length; j++)
+					{
+						var val = GetRandomNumber(j, random);
+
+						data.Add(new object[]{j, val, branches[j] + ":" + val});
 					}
 					break;
 

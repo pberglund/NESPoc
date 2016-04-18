@@ -75,8 +75,7 @@ function massageData(d) {
     }
     return data;
 }
-
-function massageMonthData(d) {
+function massageTooltipData(d) {
     var data = [];
 
     data.push([d[0][0], d[0][1], { type: 'string', role: 'tooltip' }]);

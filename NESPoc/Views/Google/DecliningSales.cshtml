@@ -35,19 +35,19 @@
                 title: 'Month',
                 showTextEvery: 1,
                 ticks: [{
-                    v: 1,
+                    v: 0,
                     f: 'Branch-1'
                 }, {
-                    v: 2,
+                    v: 1,
                     f: 'Branch-2'
                 }, {
-                    v: 3,
+                    v: 2,
                     f: 'Branch-3'
                 }, {
-                    v: 4,
+                    v: 3,
                     f: 'Branch-4'
                 }, {
-                    v: 5,
+                    v: 4,
                     f: 'Branch-5'
                 }]
             },
@@ -76,9 +76,9 @@
         barOptions = merge_options(defaultBarOptions, options);
 
 
-        var callBack = function (d) {
+        var callBack = function(d) {
 
-            var massagedData = massageData(d);
+            var massagedData = massageTooltipData(d);
 
             var data = google.visualization.arrayToDataTable(massagedData);
 
@@ -87,7 +87,7 @@
                 options: options,
             }
 
-            lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function (chart) { randomizeData(chart, 3, true, function (e) { return massageData(e); }); });
+            lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function(chart) { randomizeData(chart, 3, true, function(e) { return massageTooltipData(e); }); });
 
             barObj = {
                 data: data,
@@ -95,7 +95,7 @@
             }
 
 
-            barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function (chart) { randomizeData(chart, 3, true, function (e) { return massageData(e); }); });
+            barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function(chart) { randomizeData(chart, 3, true, function(e) { return massageTooltipData(e); }); });
         };
 
         InitializePage(callBack, 3, false);

@@ -92,7 +92,7 @@
     function drawChart() {
         var callBack = function (d) {
 
-            var massagedData = massageMonthData(d);
+            var massagedData = massageTooltipData(d);
 
             var data = google.visualization.arrayToDataTable(massagedData);
             lineObj = {
@@ -100,7 +100,7 @@
                 options: lineOptions,
             }
 
-            lineObj = configureChartWithTrendLines(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', 'toggleLineTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageMonthData(e); }); });
+            lineObj = configureChartWithTrendLines(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', 'toggleLineTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageTooltipData(e); }); });
 
             barOptions = merge_options(defaultBarOptions, lineOptions);
 
@@ -109,7 +109,7 @@
                 options: barOptions,
             }
 
-            barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageMonthData(e); }); });
+            barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageTooltipData(e); }); });
         };
 
         InitializePage(callBack, 2, false);
