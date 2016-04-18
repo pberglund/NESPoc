@@ -35,19 +35,19 @@
                 title: 'Month',
                 showTextEvery: 1,
                 ticks: [{
-                    v: 0,
+                    v: 1,
                     f: 'Branch-1'
                 }, {
-                    v: 1,
+                    v: 2,
                     f: 'Branch-2'
                 }, {
-                    v: 2,
+                    v: 3,
                     f: 'Branch-3'
                 }, {
-                    v: 3,
+                    v: 4,
                     f: 'Branch-4'
                 }, {
-                    v: 4,
+                    v: 5,
                     f: 'Branch-5'
                 }]
             },
@@ -75,7 +75,8 @@
 
         barOptions = merge_options(defaultBarOptions, options);
 
-        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 0, random = false})))').done(function (d) {
+
+        var callBack = function (d) {
 
             var massagedData = massageData(d);
 
@@ -86,7 +87,7 @@
                 options: options,
             }
 
-            lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
+            lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function (chart) { randomizeData(chart, 3, true, function (e) { return massageData(e); }); });
 
             barObj = {
                 data: data,
@@ -94,11 +95,12 @@
             }
 
 
-            barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
-        });
+            barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function (chart) { randomizeData(chart, 3, true, function (e) { return massageData(e); }); });
+        };
 
-        
-        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 1, random = false})))').done(function (d) {
+        InitializePage(callBack, 3, false);
+
+        var yearCallBack = function (d) {
 
             var massagedData = massageYearData(d);
 
@@ -117,7 +119,9 @@
             lineYearObj = configureChart(lineYearObj, 'line_chart_year_div', 'LineChart', 'updateLineYearChart', function (chart) { randomizeData(chart, 1, true, function (e) { return massageYearData(e); }); });
 
             barYearObj = configureChart(barYearObj, 'bar_chart_year_div', 'BarChart', 'updateBarYearChart', function (chart) { randomizeData(chart, 1, true, function (e) { return massageYearData(e); }); });
-        });
+        };
+
+        InitializePage(yearCallBack, 1, false);
     }
 </script>
 

@@ -38,25 +38,25 @@
                 title: 'Year',
                 showTextEvery: 1,
                 ticks: [{
-                    v: 0,
+                    v: 1,
                     f: '2010'
                 }, {
-                    v: 1,
+                    v: 2,
                     f: '2011'
                 }, {
-                    v: 2,
+                    v: 3,
                     f: '2012'
                 }, {
-                    v: 3,
+                    v: 4,
                     f: '2013'
                 }, {
-                    v: 4,
+                    v: 5,
                     f: '2014'
                 }, {
-                    v: 5,
+                    v: 6,
                     f: '2015'
                 }, {
-                    v: 6,
+                    v: 7,
                     f: '2016'
                 }]
             },
@@ -67,12 +67,11 @@
     // draws it.
     function drawChart() {
         
-        var data;
-        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 0, random = false})))').done(function (d) {
+        var callBack = function (d) {
 
             var massagedData = massageData(d);
 
-            data = google.visualization.arrayToDataTable(massagedData);
+            var data = google.visualization.arrayToDataTable(massagedData);
 
             lineObj = {
                 data: data,
@@ -89,7 +88,9 @@
             }
 
             barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
-        });
+        };
+
+        InitializePage(callBack, 0, false);
     }
 
 

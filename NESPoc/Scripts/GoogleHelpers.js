@@ -1,4 +1,19 @@
 ﻿
+
+function InitializePage(callBackFunc, type, random) {
+
+    if (type == null) {
+        type = 0;
+    }
+    if (random == null) {
+        random = false;
+    }
+
+    $.post('/Google/GraphData?type=' + type + "&random=" + random).done(function (d) {
+        callBackFunc(d);
+    });
+}
+
 function toggleTrendLines(chartObj) {
 
     if (chartObj.options.trendlines != null) {
@@ -103,7 +118,7 @@ function randomizeData(chartObj, type, random, massageFunc) {
         random = false;
     }
 
-    $.post('/Google/PurchaseHistoryData?type=' + type + "&random=" + random).done(function (d) {
+    $.post('/Google/GraphData?type=' + type + "&random=" + random).done(function (d) {
 
         var massagedData = massageFunc(d);
         var newData = google.visualization.arrayToDataTable(massagedData);

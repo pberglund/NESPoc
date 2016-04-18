@@ -34,7 +34,7 @@ namespace NESPoc.Controllers
 		} 
 
 		[HttpPost]
-		public ActionResult PurchaseHistoryData(int type, bool random)
+		public ActionResult GraphData(int type, bool random)
 		{
 			List<object> data = new List<object>();
 			int[] years = new int[]{ 2010,
@@ -56,7 +56,7 @@ namespace NESPoc.Controllers
 			{
 				default:
 				case 0: // Branches and values
-					data.Add(new[] { "Branch", "Value" });
+					data.Add(new[] { "Year", "Value" });
 					// Needs to be "massaged" into google charts data format for year legend - more of a data flow type i imagine
 					data.AddRange(years.Select((t, i) => new object[] {years[i], GetRandomNumber(i, random)}));
 					// Does not
@@ -114,6 +114,13 @@ namespace NESPoc.Controllers
 						};
 
 						data.Add(objs.ToArray());
+					}
+					break;
+				case 3:
+					data.Add(new[] { "Branch", "Value" });
+					for (int j = 1; j < branches.Length + 1; j++)
+					{
+						data.Add(new[]{j, GetRandomNumber(j, random)});
 					}
 					break;
 

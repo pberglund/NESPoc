@@ -90,49 +90,11 @@
     // instantiates the pie chart, passes in the data and
     // draws it.
     function drawChart() {
-        //data.addColumn('number', 'Date');
-        //data.addColumn('number', 'Value');
-
-        //data.addColumn({ type: 'string', role: 'tooltip' });
-
-        //var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        ////var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-        //for (var i = 0; i < 12; i++) {
-
-        //    var val = randomData();
-
-        //    var tooltip = months[i] + ": " + val;
-
-        //    lineDataVals.push([{ v: i, f: i.toString() }, val, tooltip]);
-        //}
-
-        //data.addRows(lineDataVals);
-
-        //barOptions = merge_options(defaultBarOptions, lineOptions);
-        
-        //lineObj = {
-        //    data: data,
-        //    options: lineOptions,
-        //}
-
-        //lineObj = configureChart(lineObj, 'line_chart_div', 'LineChart', 'updateLineChart', function (chartObj) { randomizePointOnChart(chartObj, 100); });
-
-        //barObj = {
-        //    data: data,
-        //    options: barOptions,
-        //}
-        //barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function (chartObj) { randomizePointOnChart(chartObj, 100); });
-
-
-
-        var data;
-        $.post('@Html.Raw((Url.Action("PurchaseHistoryData", "Google", new{ type = 2, random = false})))').done(function (d) {
+        var callBack = function (d) {
 
             var massagedData = massageMonthData(d);
 
-            data = google.visualization.arrayToDataTable(massagedData);
-
+            var data = google.visualization.arrayToDataTable(massagedData);
             lineObj = {
                 data: data,
                 options: lineOptions,
@@ -148,7 +110,9 @@
             }
 
             barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 2, true, function (e) { return massageMonthData(e); }); });
-        });
+        };
+
+        InitializePage(callBack, 2, false);
 
     }
 
