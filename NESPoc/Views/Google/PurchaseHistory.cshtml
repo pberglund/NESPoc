@@ -90,7 +90,7 @@
             barObj = configureChartWithTrendLines(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', 'toggleBarTrendLines', function (chart) { randomizeData(chart, 0, true, function (e) { return massageData(e); }); });
         };
 
-        InitializePage(callBack, 0, false);
+        InitializePage(null, callBack, 0, false);
     }
 
 

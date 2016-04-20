@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Web;
 using System.Web.Mvc;
 
 namespace NESPoc.Controllers
@@ -161,6 +159,99 @@ namespace NESPoc.Controllers
 		public ActionResult PurchaseFluctuation()
 		{
 			return View();
+		}
+
+		public ActionResult TestPage()
+		{
+			return View();
+		}
+
+		public ActionResult DistrictChart()
+		{
+			return View();
+		}
+		
+
+		[HttpPost]
+		public ActionResult MidwestData(int? type)
+		{
+			int typeToSwitch = type == null ? 0 : (int) type;
+			dynamic data = null;
+			
+			switch (typeToSwitch)
+			{
+				default:
+				case 0:
+					var obj = new object[]
+					{
+						 new double[]
+						{
+							0.007,
+							0.007,
+							0.008,
+							0.009,
+							0.008,
+							0.009,
+							0.009,
+							0.008,
+							0.009,
+							0.008,
+							0.007,
+							0.008,
+							0.008,
+							0.008,
+							0.009,
+							0.009,
+							0.008,
+							0.008,
+							0.008,
+							0.008,
+							0.008,
+							0.007,
+							0.006,
+							0.006,
+						},
+						new int[]
+						{
+2925987,
+3161657,
+3488980,
+3873309,
+3772323,
+3965592,
+4249127,
+3667705,
+3934838,
+3436256,
+2956282,
+3411471,
+3500552,
+3622254,
+4041303,
+4204165,
+3766098,
+3835411,
+3906205,
+3709012,
+3848036,
+3385292,
+2881898,
+3082204,
+						}
+					};
+
+					data = obj;
+					
+				break;
+				case 1:
+				break;
+				case 2:
+				break;
+				case 3:
+				break;
+			}
+
+			return Json(data);
 		}
 	}
 }

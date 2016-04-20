@@ -1,15 +1,21 @@
 ﻿
 
-function InitializePage(callBackFunc, type, random) {
+function InitializePage(method, callBackFunc, type, random) {
+
+    if (method == null || method == '') {
+        method = 'GraphData';
+    }
 
     if (type == null) {
         type = 0;
     }
-    if (random == null) {
-        random = false;
+
+    var url = '/Google/' + method + '?type=' + type;
+    if (random != null) {
+        url += "&random=" + random;
     }
 
-    $.post('/Google/GraphData?type=' + type + "&random=" + random).done(function (d) {
+    $.post(url).done(function (d) {
         callBackFunc(d);
     });
 }

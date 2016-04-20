@@ -98,7 +98,7 @@
             barObj = configureChart(barObj, 'bar_chart_div', 'BarChart', 'updateBarChart', function(chart) { randomizeData(chart, 3, true, function(e) { return massageTooltipData(e); }); });
         };
 
-        InitializePage(callBack, 3, false);
+        InitializePage(null,callBack, 3, false);
 
         var yearCallBack = function (d) {
 
@@ -121,7 +121,7 @@
             barYearObj = configureChart(barYearObj, 'bar_chart_year_div', 'BarChart', 'updateBarYearChart', function (chart) { randomizeData(chart, 1, true, function (e) { return massageYearData(e); }); });
         };
 
-        InitializePage(yearCallBack, 1, false);
+        InitializePage(null, yearCallBack, 1, false);
     }
 </script>
 
