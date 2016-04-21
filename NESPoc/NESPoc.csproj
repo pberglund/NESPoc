@@ -226,6 +226,7 @@
     <Content Include="Views\Google\TestPage.cshtml" />
     <Content Include="Views\Google\DistrictChart.cshtml" />
     <Content Include="Views\Google\BranchChart.cshtml" />
+    <Content Include="Views\Google\TimelineChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,194 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/Scripts/GoogleHelpers.js"></script>
+<script type="text/javascript">
+
+    var barObj = null;
+    var chartObjs = [];
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var months = ["Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "May",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec"
+        ];
+
+        var defaultLineOptions =
+                {
+                    legend: { position: 'top' },
+                    width: '100%',
+                    height: '100%',
+                    trendlines: {
+                        0: {
+                            color: "black",
+                        }
+                    }
+                };
+
+
+        var districtOptions = merge_options({
+            ticks: [
+                0,
+                500000,
+                1000000,
+                1500000,
+                2000000,
+                2500000,
+                3000000,
+                3500000,
+                4000000,
+                4500000
+            ]
+        }, defaultLineOptions);
+
+        var branchOptions = merge_options({
+            ticks: [
+                0,
+                10000,
+                20000,
+                30000,
+                40000,
+                50000,
+                60000,
+                70000
+            ]
+        }, defaultLineOptions);
+
+        var callBack = function (d) {
+
+            var currencyFormatter = new google.visualization.NumberFormat(
+                {
+                    pattern: '$###,###'
+                });
+
+            for (var j = 0; j < d.length; j++) {
+
+                var districtValues = [];
+                var branchValues = [];
+
+                districtValues.push(["Index", "DistrictValue"]);
+                branchValues.push(["Index", "BranchValue"]);
+
+                var obj = d[j];
+                var date = new Date(obj.Date);
+
+                var year = date.getFullYear();
+                var month = date.getMonth();
+                $("#branch_chart_year_" + j).html(year);
+                $("#branch_chart_month_" + j).html(months[month]);
+                $("#branch_chart_dist_" + j).html(roundedToFixed(obj.DistrictPercentage, 1) + "%");
+                $("#branch_chart_cust_" + j).html(roundedToFixed(obj.CustomerPercentage, 1) + "%");
+                $("#branch_chart_diff_" + j).html(roundedToFixed(obj.PercentageDifference, 1) + "%");
+
+                for (var i = 0; i < obj.BranchValues.length; i++) {
+                    var districtValue = obj.DistrictValues[i];
+                    var branchValue = obj.BranchValues[i];
+
+                    districtValues.push([i, districtValue]);
+                    branchValues.push([i, branchValue]);
+                }
+            
+
+                var districtData = google.visualization.arrayToDataTable(districtValues);
+                var branchData = google.visualization.arrayToDataTable(branchValues);
+
+
+                currencyFormatter.format(districtData, 1);
+                currencyFormatter.format(branchData, 1);
+
+                var districtObj = {
+                    data: districtData,
+                    options: districtOptions
+                }
+
+                districtObj.chart = new google.visualization.LineChart(document.getElementById("district_chart_div_" + j));
+
+                chartObjs.push(districtObj);
+                
+
+                var branchObj = {
+                    data: branchData,
+                    options: branchOptions
+                }
+
+                branchObj.chart = new google.visualization.LineChart(document.getElementById("branch_chart_div_" + j));
+
+                chartObjs.push(branchObj);
+            }
+
+                $(window).resize(function () {
+                    for (var i = 0; i < chartObjs.length; i++) {
+                        var chartObj = chartObjs[i];
+                        drawChartHelper(chartObj);
+                        }
+                });
+            $(window).resize();
+
+
+        };
+
+        InitializePage('MidwestData', callBack, 3);
+    }
+
+    function roundedToFixed(_float, _digits) {
+        var rounder = Math.pow(10, _digits);
+        return (Math.round(_float * rounder) / rounder).toFixed(_digits);
+    }
+
+</script>
+
+@for (int i = 0; i < 2; i++)
+{
+    <div class="row">
+        <div class="col-md-6">
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Dist</th>
+                        <th>Cust</th>
+                        <th>Diff</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="branch_chart_year_@i" width="20%"></td>
+                        <td id="branch_chart_month_@i" width="20%"></td>
+                        <td id="branch_chart_dist_@i" width="20%"></td>
+                        <td id="branch_chart_cust_@i" width="20%"></td>
+                        <td id="branch_chart_diff_@i" width="20%"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart_wrap">
+                <div id="branch_chart_div_@i" class="chart"></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart_wrap">
+                <div id="district_chart_div_@i" class="chart"></div>
+            </div>
+        </div>
+    </div>
+}

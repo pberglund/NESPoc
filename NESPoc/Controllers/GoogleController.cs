@@ -176,6 +176,11 @@ namespace NESPoc.Controllers
 			return View();
 		}
 
+		public ActionResult TimelineChart()
+		{
+			return View();
+		}
+
 		[HttpPost]
 		public ActionResult MidwestData(int? type)
 		{
@@ -362,6 +367,137 @@ namespace NESPoc.Controllers
 					data = obj;
 					break;
 				case 3:
+					obj = new object[]
+					{
+						new
+						{
+							BranchValues = new int[]
+							{
+								25095,
+								28165,
+								10645,
+								57910,
+								20030,
+								18915,
+								26391,
+								25155,
+								27811,
+								23245,
+								46880,
+								30720,
+								33695,
+								29370,
+								21210,
+								48835,
+								41680,
+								31700,
+								10165,
+								10165,
+								17760,
+								5060,
+								4515,
+								2700,
+							},
+							DistrictValues = new int[]
+							{
+								2925987,
+								3161657,
+								3488980,
+								3873309,
+								3772323,
+								3965592,
+								4249127,
+								3667705,
+								3934838,
+								3436256,
+								2956282,
+								3411471,
+								3500552,
+								3622254,
+								4041303,
+								4204165,
+								3766098,
+								3835411,
+								3906205,
+								3709012,
+								3848036,
+								3385292,
+								2881898,
+								3082204,
+							},
+							Date = new DateTime(2016, 3, 1).UnixTicks(),
+							DistrictPercentage = 0.0,
+							CustomerPercentage = -3.1,
+							PercentageDifference = -3.1 - 0.0,
+						},
+						new
+						{
+							BranchValues = new int[]
+							{
+								36985,
+25095,
+28165,
+10645,
+57910,
+20030,
+18915,
+26391,
+25155,
+27811,
+23245,
+46880,
+30720,
+33695,
+29370,
+21210,
+48835,
+41680,
+31700,
+10165,
+10165,
+17760,
+5060,
+4515,
+
+							},
+							DistrictValues = new int[]
+							{
+								2746373,
+2925987,
+3161657,
+3488980,
+3873309,
+3772323,
+3965592,
+4249127,
+3667705,
+3934838,
+3436256,
+2956282,
+3411471,
+3500552,
+3622254,
+4041303,
+4204165,
+3766098,
+3835411,
+3906205,
+3709012,
+3848036,
+3385292,
+2881898,
+
+							},
+							Date = new DateTime(2016, 3, 1).UnixTicks(),
+							
+							DistrictPercentage = 0.4,
+							CustomerPercentage = -2.5,
+							PercentageDifference = -2.5 - 0.4,
+						},
+
+					};
+
+					data = obj;
 					break;
 			}
 
