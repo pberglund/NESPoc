@@ -225,6 +225,7 @@
     <Content Include="Views\ChartJs\PurchaseHistory.cshtml" />
     <Content Include="Views\Google\TestPage.cshtml" />
     <Content Include="Views\Google\DistrictChart.cshtml" />
+    <Content Include="Views\Google\BranchChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

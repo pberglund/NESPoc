@@ -1,0 +1,97 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/Scripts/GoogleHelpers.js"></script>
+<script type="text/javascript">
+
+    var barObj = null;
+
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var callBack = function (d) {
+
+            var massagedData = [];
+
+            massagedData.push(["Branch",
+                               "Current Year", { type: 'string', role: 'annotation' },
+                               "Previous Year", { type: 'string', role: 'annotation' }]);
+
+            //{ type: 'string', role: 'annotationText' },
+            //{ type: 'string', role: 'annotationText' }
+            
+            var currencyFormatter = new google.visualization.NumberFormat(
+                {
+                    pattern: '$###,###'
+                });
+
+            for (var j = 0; j < d[0].length; j++) {
+
+                var currYearVal = d[1][j];
+                var prevYearVal = d[2][j];
+                var currAnnotation = null;
+                var prevAnnotation = null;
+                if (currYearVal > 0) {
+                    currAnnotation = currencyFormatter.formatValue(currYearVal);
+                }
+
+                if (prevYearVal > 0) {
+                    prevAnnotation = currencyFormatter.formatValue(prevYearVal);
+                }
+                massagedData.push([d[0][j], currYearVal, currAnnotation, prevYearVal, prevAnnotation]);
+            }
+
+            var data = google.visualization.arrayToDataTable(massagedData);
+
+            
+            currencyFormatter.format(data, 1),
+            currencyFormatter.format(data, 3),
+
+            barObj = {
+                data: data,
+                options: {
+                    legend: { position: 'top' },
+                    width: '100%',
+                    height: '100%',
+                    orientation: "horizontal",
+                    vAxis:{
+                        format: 'currency',
+                        ticks: [0,
+                            50000,
+                            100000,
+                            150000,
+                            200000,
+                            250000,
+                            300000,
+                        350000]
+                    },
+                    colors: ["blue", "red" ],
+                },
+            }
+
+            barObj.chart = new google.visualization.BarChart(document.getElementById("bar_chart_div"));
+
+            drawChartHelper(barObj);
+
+            $(window).resize(function () {
+                drawChartHelper(barObj);
+            });
+        };
+
+        InitializePage('MidwestData', callBack, 2);
+        }
+</script>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Branch Bar Chart</h3>
+        <div class="chart_wrap">
+            <div id="bar_chart_div" class="chart"></div>
+        </div>
+    </div>
+</div>

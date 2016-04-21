@@ -171,6 +171,10 @@ namespace NESPoc.Controllers
 			return View();
 		}
 
+		public ActionResult BranchChart()
+		{
+			return View();
+		}
 
 		[HttpPost]
 		public ActionResult MidwestData(int? type)
@@ -307,6 +311,55 @@ namespace NESPoc.Controllers
 					data = obj;
 					break;
 				case 2:
+					obj = new object[]
+					{
+						new string[]
+						{
+							"B052",
+							"B057",
+							"B063",
+							"B068",
+							"B087",
+							"B089",
+							"B301",
+							"B307",
+							"B309",
+							"B339",
+							"Other",
+							"0",
+						},
+						new int[]
+						{
+							0,
+							7595,
+							0,
+							0,
+							0,
+							0,
+							0,
+							0,
+							0,
+							249260,
+							0,
+							0,
+						},
+						new int[]
+						{
+							0,
+							65602,
+							0,
+							10205,
+							0,
+							0,
+							0,
+							0,
+							0,
+							240060,
+							0,
+							0,
+						}
+					};
+					data = obj;
 					break;
 				case 3:
 					break;
