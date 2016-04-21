@@ -28,6 +28,7 @@ function toggleTrendLines(chartObj) {
         chartObj.options.trendlines = {
             0: {
                 color: 'black',
+                tooltip: false,
             }
         };
     }

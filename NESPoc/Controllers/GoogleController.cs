@@ -170,21 +170,22 @@ namespace NESPoc.Controllers
 		{
 			return View();
 		}
-		
+
 
 		[HttpPost]
 		public ActionResult MidwestData(int? type)
 		{
 			int typeToSwitch = type == null ? 0 : (int) type;
 			dynamic data = null;
-			
+			object[] obj = null;
+
 			switch (typeToSwitch)
 			{
 				default:
 				case 0:
-					var obj = new object[]
+					obj = new object[]
 					{
-						 new double[]
+						new double[]
 						{
 							0.007,
 							0.007,
@@ -213,42 +214,102 @@ namespace NESPoc.Controllers
 						},
 						new int[]
 						{
-2925987,
-3161657,
-3488980,
-3873309,
-3772323,
-3965592,
-4249127,
-3667705,
-3934838,
-3436256,
-2956282,
-3411471,
-3500552,
-3622254,
-4041303,
-4204165,
-3766098,
-3835411,
-3906205,
-3709012,
-3848036,
-3385292,
-2881898,
-3082204,
+							2925987,
+							3161657,
+							3488980,
+							3873309,
+							3772323,
+							3965592,
+							4249127,
+							3667705,
+							3934838,
+							3436256,
+							2956282,
+							3411471,
+							3500552,
+							3622254,
+							4041303,
+							4204165,
+							3766098,
+							3835411,
+							3906205,
+							3709012,
+							3848036,
+							3385292,
+							2881898,
+							3082204,
 						}
 					};
 
 					data = obj;
-					
-				break;
+
+					break;
 				case 1:
-				break;
+					obj = new object[]
+					{
+						new double[]
+						{
+							new DateTime(2014, 4, 1).UnixTicks(),
+							new DateTime(2014, 5, 1).UnixTicks(),
+							new DateTime(2014, 6, 1).UnixTicks(),
+							new DateTime(2014, 7, 1).UnixTicks(),
+							new DateTime(2014, 8, 1).UnixTicks(),
+							new DateTime(2014, 9, 1).UnixTicks(),
+							new DateTime(2014, 10, 1).UnixTicks(),
+							new DateTime(2014, 11, 1).UnixTicks(),
+							new DateTime(2014, 12, 1).UnixTicks(),
+							new DateTime(2015, 1, 1).UnixTicks(),
+							new DateTime(2015, 2, 1).UnixTicks(),
+							new DateTime(2015, 3, 1).UnixTicks(),
+							new DateTime(2015, 4, 1).UnixTicks(),
+							new DateTime(2015, 5, 1).UnixTicks(),
+							new DateTime(2015, 6, 1).UnixTicks(),
+							new DateTime(2015, 7, 1).UnixTicks(),
+							new DateTime(2015, 8, 1).UnixTicks(),
+							new DateTime(2015, 9, 1).UnixTicks(),
+							new DateTime(2015, 10, 1).UnixTicks(),
+							new DateTime(2015, 11, 1).UnixTicks(),
+							new DateTime(2015, 12, 1).UnixTicks(),
+							new DateTime(2016, 1, 1).UnixTicks(),
+							new DateTime(2016, 2, 1).UnixTicks(),
+							new DateTime(2016, 3, 1).UnixTicks(),
+
+						},
+						new int[]
+						{
+							25095,
+							28165,
+							10645,
+							57910,
+							20030,
+							18915,
+							26391,
+							25155,
+							27811,
+							23245,
+							46880,
+							30720,
+							33695,
+							29370,
+							21210,
+							48835,
+							41680,
+							31700,
+							10165,
+							10165,
+							17760,
+							5060,
+							4515,
+							2700,
+						}
+					};
+
+					data = obj;
+					break;
 				case 2:
-				break;
+					break;
 				case 3:
-				break;
+					break;
 			}
 
 			return Json(data);
