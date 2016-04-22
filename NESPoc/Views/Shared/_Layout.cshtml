@@ -45,6 +45,17 @@
                             <li>@Html.ActionLink("Declining Sales", "DecliningSales", "Google")</li>
                         </ul>
                     </li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            Google Charts - NES <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li>@Html.ActionLink("District Chart", "DistrictChart", "Google")</li>
+                            <li>@Html.ActionLink("Branch Chart", "BranchChart", "Google")</li>
+                            <li>@Html.ActionLink("Time Line", "TimelineChart", "Google")</li>
+                        </ul>
+                    </li>
                 </ul>
                     @Html.Partial("_LoginPartial")
                 </div>
