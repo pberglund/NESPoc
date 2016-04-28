@@ -12,82 +12,85 @@
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
+        
+        var chartOptions = [
+            {
+                method: "MidwestData",
+                type: 2,
+                mainManipulation: function(obj) {
 
-        var callBack = function (d) {
+                    var d = obj.data;
+                    var massagedData = [];
 
-            var massagedData = [];
+                    massagedData.push([
+                        "Branch",
+                        "Current Year", { type: 'string', role: 'annotation' },
+                        "Previous Year", { type: 'string', role: 'annotation' }
+                    ]);
 
-            massagedData.push(["Branch",
-                               "Current Year", { type: 'string', role: 'annotation' },
-                               "Previous Year", { type: 'string', role: 'annotation' }]);
+                    $("#companyName").html(d.CompanyName);
 
-            var currencyFormatter = new google.visualization.NumberFormat(
-                {
-                    pattern: '$###,###'
-                });
+                    var totalMin = 0;
+                    var totalMax = 0;
 
-            $("#companyName").html(d.CompanyName);
+                    for (var j = 0; j < d.BranchRecords.length; j++) {
 
-            var totalMin = 0;
-            var totalMax = 0;
+                        var branch = d.BranchRecords[j].BranchName;
+                        var currYearVal = d.BranchRecords[j].CurrentYearRevenue;
+                        var prevYearVal = d.BranchRecords[j].PreviousYearRevenue;
 
-            for (var j = 0; j < d.BranchRecords.length; j++) {
+                        totalMin = Math.min(totalMin, currYearVal, prevYearVal);
+                        totalMax = Math.max(totalMax, currYearVal, prevYearVal);
 
-                var branch = d.BranchRecords[j].BranchName;
-                var currYearVal = d.BranchRecords[j].CurrentYearRevenue;
-                var prevYearVal = d.BranchRecords[j].PreviousYearRevenue;
+                        var currAnnotation = null;
+                        var prevAnnotation = null;
+                        if (currYearVal > 0) {
+                            currAnnotation = formatCurrencyValue(currYearVal);
+                        }
 
-                totalMin = Math.min(totalMin, currYearVal, prevYearVal);
-                totalMax = Math.max(totalMax, currYearVal, prevYearVal);
+                        if (prevYearVal > 0) {
+                            prevAnnotation = formatCurrencyValue(prevYearVal);
+                        }
+                        massagedData.push([branch, currYearVal, currAnnotation, prevYearVal, prevAnnotation]);
+                    }
 
-                var currAnnotation = null;
-                var prevAnnotation = null;
-                if (currYearVal > 0) {
-                    currAnnotation = currencyFormatter.formatValue(currYearVal);
-                }
-
-                if (prevYearVal > 0) {
-                    prevAnnotation = currencyFormatter.formatValue(prevYearVal);
-                }
-                massagedData.push([branch, currYearVal, currAnnotation, prevYearVal, prevAnnotation]);
-            }
-
-            var data = google.visualization.arrayToDataTable(massagedData);
-
-            currencyFormatter.format(data, 1),
-            currencyFormatter.format(data, 3),
-
-            barObj = {
-                data: data,
-                options: {
-                    legend: { position: 'top' },
-                    width: '100%',
-                    height: '100%',
-                    orientation: "horizontal",
-                    vAxis: {
-                        format: 'currency',
-                        minValue: totalMin,
-                        maxValue: totalMax,
-                        //ticks: []
-                    },
-                    colors: ["blue", "red"],
+                    var data = google.visualization.arrayToDataTable(massagedData);
+                    return {
+                        dataTables: [data],
+                        totalMin: totalMin,
+                        totalMax: totalMax,
+                    }
                 },
+                postProcessing: function(obj) {
+                    var dataTable = obj.dataTables[0];
+                    formatCurrency(dataTable, 1);
+                    formatCurrency(dataTable, 3);
+
+                    var chartObj = {
+                        chartType: "BarChart",
+                        elementId: "bar_chart_div",
+                        data: dataTable,
+                        options: {
+                            legend: { position: 'top' },
+                            width: '100%',
+                            height: '100%',
+                            orientation: "horizontal",
+                            vAxis: {
+                                format: 'currency',
+                                minValue: obj.totalMin,
+                                maxValue: obj.totalMax,
+                            },
+                            colors: ["blue", "red"],
+                        },
+                    }
+
+                    return [chartObj];
+                }
             }
+        ];
 
-            
 
-            barObj.options.vAxis.ticks
-
-            barObj.chart = new google.visualization.BarChart(document.getElementById("bar_chart_div"));
-
-            drawChartHelper(barObj);
-
-            $(window).resize(function () {
-                drawChartHelper(barObj);
-            });
-        };
-
-        InitializePage('MidwestData', callBack, {type: 2});
+        ConfigureCharts(chartOptions);
     }
 </script>
 

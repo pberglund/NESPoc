@@ -16,186 +16,182 @@
 
     function drawChart() {
 
-        var callBack = function(d) {
 
-            var districtObj = d.District;
-            var branchObj = d.Branch;
+        var chartOptions = [
+            {
+                method: "MidwestData",
+                type: 0,
+                mainManipulation: function (obj) {
 
-            var districtData = [];
-            var branchData = [];
+                    var d = obj.data;
 
-            //var totalMinDistrict = 0;
-            var totalMaxDistrict = 0;
-            //var totalMinBranch = 0;
-            var totalMaxBranch = 0;
+                    var districtObj = d.District;
+                    var branchObj = d.Branch;
 
-            districtData.push(["Index", "Percent", "Revenue"]);
-            for (var j = 0; j < districtObj.Records.length; j++) {
+                    var districtData = [];
+                    var branchData = [];
 
-                var percent = districtObj.Records[j].PercentRevenue / 10;
-                var revenue = districtObj.Records[j].Revenue;
+                    //var totalMinDistrict = 0;
+                    var totalMaxDistrict = 0;
+                    //var totalMinBranch = 0;
+                    var totalMaxBranch = 0;
 
-                //totalMinDistrict = Math.min(totalMinDistrict, revenue);
-                totalMaxDistrict = Math.max(totalMaxDistrict, revenue);
+                    districtData.push(["Index", "Percent", "Revenue"]);
+                    for (var j = 0; j < districtObj.Records.length; j++) {
 
-                districtData.push([j, percent, revenue]);
-            }
+                        var percent = districtObj.Records[j].PercentRevenue / 10;
+                        var revenue = districtObj.Records[j].Revenue;
 
-            branchData.push(["Timestamp", "Revenue"]);
-            for (var j = 0; j < branchObj.BranchRevenues.length; j++) {
-                var date = new Date(branchObj.BranchRevenues[j].Date);
-                var branchRevenue = branchObj.BranchRevenues[j].Revenue;
+                        //totalMinDistrict = Math.min(totalMinDistrict, revenue);
+                        totalMaxDistrict = Math.max(totalMaxDistrict, revenue);
 
-                //totalMinBranch = Math.min(totalMinBranch, branchRevenue);
-                totalMaxBranch = Math.max(totalMaxBranch, branchRevenue);
-                branchData.push([date, branchRevenue]);
-            }
+                        districtData.push([j, percent, revenue]);
+                    }
 
-            var comboData = google.visualization.arrayToDataTable(districtData);
-            var lineData = google.visualization.arrayToDataTable(branchData);
+                    branchData.push(["Timestamp", "Revenue"]);
+                    for (var j = 0; j < branchObj.BranchRevenues.length; j++) {
+                        var date = new Date(branchObj.BranchRevenues[j].Date);
+                        var branchRevenue = branchObj.BranchRevenues[j].Revenue;
 
-            comboObj = {
-                data: comboData,
-                options:   {
-                    width: '100%',
-                    height: '100%',
-                    trendlines: {
-                        0: {
-                            color: 'red',
-                            tooltip: false,
-                        },
-                        1: {
-                            color: 'black',
-                            tooltip: false,
-                        },
-                    },
-                    title: 'District Chart',
-                    vAxes: {
-                        0: {
-                            title: 'Revenue',
-                            gridlines: { color: 'transparent' },
-                            format: "$#,#",
-                            ticks:[],
-                        },
-                        1: {
-                            title: 'Percent',
-                            gridlines: { color: 'transparent' },
-                            format: "percent",
-                            viewWindow: {
-                                max:.05,
-                                min: 0
-                            }
-                
-                        },
-                    },
-                    series: {
-                        0: { targetAxisIndex: 1, type: "bars", },
-                        1: { targetAxisIndex: 0 },
-                    },
-                    colors: ["red", "blue"],
-                    hAxis: {
-                        showTextEvery: 1,
-                        gridlines: { count: 24 }
-                    },
-                },
-            }
+                        //totalMinBranch = Math.min(totalMinBranch, branchRevenue);
+                        totalMaxBranch = Math.max(totalMaxBranch, branchRevenue);
+                        branchData.push([date, branchRevenue]);
+                    }
 
-            var magnitude = GetMagnitude(totalMaxDistrict).Magnitude;
-
-            var bench = Math.pow(10, magnitude);
-
-            var step = Math.ceil(totalMaxDistrict / bench) * bench;
-
-            while(step > 0){
-                var val = step;
-                var suffix;
-                var result = GetMagnitude(val);
-                switch (result.Magnitude) {
-                    case 5:
-                        suffix = 'K';
-                        break;
-                    case 6:
-                        suffix = 'M';
-                        break;
-                    default:
-                        suffix = '';
-                }
-
-                var shift = 10;
-                var mod = 10;
-
-                if (step < 1000000) {
-                    shift = 100;
-                    mod = 1;
-                }
-
-                var formattedVal = "$" + (Math.round(result.Remainder * shift) / mod) + suffix;
-                comboObj.options.vAxes["0"].ticks.push({ v: step, f: formattedVal });
-                if (step > 500000) {
-                    step -= Math.pow(10, result.Magnitude) / 2;
-                } else {
-                    step = 0;
-                }
-            }
-
-            var date_formatter = new google.visualization.DateFormat({
-                pattern: "MMM yy"
-            });
-
-            date_formatter.format(lineData, 0);
-
-            var currencyFormatter = new google.visualization.NumberFormat(
-                {
-                    negativeColor: 'red',
-                    negativeParens: true,
-                    pattern: '$###,###'
-                });
-            currencyFormatter.format(lineData, 1);
-            currencyFormatter.format(comboData, 2);
-
-            var percentFormatter = new google.visualization.NumberFormat(
-                {
-                    pattern: '##.##%'
-                });
-
-            percentFormatter.format(comboData, 1);
-
-            lineObj = {
-                data: lineData,
-                options: {
-                    legend: { position: 'top' },
-                    width: '100%',
-                    height: '100%',
-                    trendlines: {
-                        0: {
-                            color: 'black',
-                            tooltip: false,
-                        },
-                    },
-                    hAxis: {
-                        format: 'MMM yy',
-                        gridlines: { count: 24 }
-                    },
-                    vAxis: {
-                        format: 'currency',
+                    var comboData = google.visualization.arrayToDataTable(districtData);
+                    var lineData = google.visualization.arrayToDataTable(branchData);
+                    return {
+                        dataTables: [comboData, lineData],
+                        totalMaxDistrict: totalMaxDistrict,
+                        
                     }
                 },
+                postProcessing: function (obj) {
+
+                    var comboData = obj.dataTables[0];
+                    var lineData = obj.dataTables[1];
+                    var totalMaxDistrict = obj.totalMaxDistrict;
+
+                    comboObj = {
+                        chartType: "ComboChart",
+                        elementId: "combo_chart_div",
+                        data: comboData,
+                        options: {
+                            width: '100%',
+                            height: '100%',
+                            trendlines: {
+                                0: {
+                                    color: 'red',
+                                    tooltip: false,
+                                },
+                                1: {
+                                    color: 'black',
+                                    tooltip: false,
+                                },
+                            },
+                            title: 'District Chart',
+                            vAxes: {
+                                0: {
+                                    title: 'Revenue',
+                                    gridlines: { color: 'transparent' },
+                                    format: "$#,#",
+                                    ticks: [],
+                                },
+                                1: {
+                                    title: 'Percent',
+                                    gridlines: { color: 'transparent' },
+                                    format: "percent",
+                                    viewWindow: {
+                                        max: .05,
+                                        min: 0
+                                    }
+
+                                },
+                            },
+                            series: {
+                                0: { targetAxisIndex: 1, type: "bars", },
+                                1: { targetAxisIndex: 0 },
+                            },
+                            colors: ["red", "blue"],
+                            hAxis: {
+                                showTextEvery: 1,
+                                gridlines: { count: 24 }
+                            },
+                        },
+                    }
+
+                    var magnitude = GetMagnitude(totalMaxDistrict).Magnitude;
+
+                    var bench = Math.pow(10, magnitude);
+
+                    var step = Math.ceil(totalMaxDistrict / bench) * bench;
+
+                    while (step > 0) {
+                        var val = step;
+                        var suffix;
+                        var result = GetMagnitude(val);
+                        switch (result.Magnitude) {
+                            case 5:
+                                suffix = 'K';
+                                break;
+                            case 6:
+                                suffix = 'M';
+                                break;
+                            default:
+                                suffix = '';
+                        }
+
+                        var shift = 10;
+                        var mod = 10;
+
+                        if (step < 1000000) {
+                            shift = 100;
+                            mod = 1;
+                        }
+
+                        var formattedVal = "$" + (Math.round(result.Remainder * shift) / mod) + suffix;
+                        comboObj.options.vAxes["0"].ticks.push({ v: step, f: formattedVal });
+                        if (step > 500000) {
+                            step -= Math.pow(10, result.Magnitude) / 2;
+                        } else {
+                            step = 0;
+                        }
+                    }
+                    
+                    formatCurrency(lineData, 1);
+                    formatCurrency(comboData, 2);
+                    formatPercentage(comboData, 1);
+                    formatDate(lineData, 0);
+
+                    lineObj = {
+                        chartType: "LineChart",
+                        elementId: "line_chart_div",
+                        data: lineData,
+                        options: {
+                            legend: { position: 'top' },
+                            width: '100%',
+                            height: '100%',
+                            trendlines: {
+                                0: {
+                                    color: 'black',
+                                    tooltip: false,
+                                },
+                            },
+                            hAxis: {
+                                format: 'MMM yy',
+                                gridlines: { count: 24 }
+                            },
+                            vAxis: {
+                                format: 'currency',
+                            }
+                        },
+                    }
+
+                    return [comboObj, lineObj];
+                }
             }
-
-            comboObj.chart = new google.visualization.ComboChart(document.getElementById("combo_chart_div"));
-
-            lineObj.chart = new google.visualization.LineChart(document.getElementById("line_chart_div"));
-            
-            $(window).resize(function () {
-                drawChartHelper(comboObj);
-                drawChartHelper(lineObj);
-            });
-
-            $(window).resize();
-
-        };
-
-        InitializePage('MidwestData', callBack, {type: 0});
+        ];
+        ConfigureCharts(chartOptions);
     }
 
     
