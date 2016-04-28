@@ -237,3 +237,13 @@ function drawChartHelper(chartObj) {
         });
     chartObj.chart.draw(chartObj.data, chartObj.options);
 }
+
+function GetMagnitude(val) {
+    for (var n = 0, formattedVal = val; formattedVal >= 10; n++) {
+        formattedVal /= 10;
+    }
+    return {
+        Magnitude: n,
+        Remainder: formattedVal,
+    };
+}

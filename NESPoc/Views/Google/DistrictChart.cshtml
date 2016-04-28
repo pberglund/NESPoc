@@ -18,21 +18,47 @@
 
         var callBack = function(d) {
 
-            var massagedData = [];
+            var districtObj = d.District;
+            var branchObj = d.Branch;
 
-            massagedData.push(["Index", "Percent", "Revenue"]);
-            for (var j = 0; j < d[0].length;) {
-                massagedData.push([j++, d[0][j], d[1][j]]);
+            var districtData = [];
+            var branchData = [];
+
+            //var totalMinDistrict = 0;
+            var totalMaxDistrict = 0;
+            //var totalMinBranch = 0;
+            var totalMaxBranch = 0;
+
+            districtData.push(["Index", "Percent", "Revenue"]);
+            for (var j = 0; j < districtObj.Records.length; j++) {
+
+                var percent = districtObj.Records[j].PercentRevenue / 10;
+                var revenue = districtObj.Records[j].Revenue;
+
+                //totalMinDistrict = Math.min(totalMinDistrict, revenue);
+                totalMaxDistrict = Math.max(totalMaxDistrict, revenue);
+
+                districtData.push([j, percent, revenue]);
             }
 
-            var data = google.visualization.arrayToDataTable(massagedData);
+            branchData.push(["Timestamp", "Revenue"]);
+            for (var j = 0; j < branchObj.BranchRevenues.length; j++) {
+                var date = new Date(branchObj.BranchRevenues[j].Date);
+                var branchRevenue = branchObj.BranchRevenues[j].Revenue;
+
+                //totalMinBranch = Math.min(totalMinBranch, branchRevenue);
+                totalMaxBranch = Math.max(totalMaxBranch, branchRevenue);
+                branchData.push([date, branchRevenue]);
+            }
+
+            var comboData = google.visualization.arrayToDataTable(districtData);
+            var lineData = google.visualization.arrayToDataTable(branchData);
 
             comboObj = {
-                data: data,
+                data: comboData,
                 options:   {
                     width: '100%',
                     height: '100%',
-                    //legend: { position: 'bottom' },
                     trendlines: {
                         0: {
                             color: 'red',
@@ -49,17 +75,7 @@
                             title: 'Revenue',
                             gridlines: { color: 'transparent' },
                             format: "$#,#",
-                            ticks: [{v: 0, f: '$0'},
-                                    {v: 500000, f: '$500k'},
-                                    {v: 1000000, f: '$1M'},
-                                    {v: 1500000, f: '$1.5M'},
-                                    {v: 2000000, f: '$2M'},
-                                    {v: 2500000, f: '$2.5M'},
-                                    {v: 3000000, f: '$3M'},
-                                    {v: 3500000, f: '$3.5M'},
-                                    {v: 4000000, f: '$4M'},
-                                    {v: 4500000, f: '$4.5M'},
-                                    {v: 5000000, f: '$5M'}]
+                            ticks:[],
                         },
                         1: {
                             title: 'Percent',
@@ -84,34 +100,49 @@
                 },
             }
 
-            comboObj.chart = new google.visualization.ComboChart(document.getElementById("combo_chart_div"));
+            var magnitude = GetMagnitude(totalMaxDistrict).Magnitude;
 
-            drawChartHelper(comboObj);
+            var bench = Math.pow(10, magnitude);
 
-            $(window).resize(function () {
-                drawChartHelper(comboObj);
-            });
-        };
+            var step = Math.ceil(totalMaxDistrict / bench) * bench;
 
-        InitializePage('MidwestData', callBack, 0);
+            while(step > 0){
+                var val = step;
+                var suffix;
+                var result = GetMagnitude(val);
+                switch (result.Magnitude) {
+                    case 5:
+                        suffix = 'K';
+                        break;
+                    case 6:
+                        suffix = 'M';
+                        break;
+                    default:
+                        suffix = '';
+                }
 
-        var callBackTwo = function (d) {
+                var shift = 10;
+                var mod = 10;
 
-            var massagedData = [];
+                if (step < 1000000) {
+                    shift = 100;
+                    mod = 1;
+                }
 
-            massagedData.push([ "Timestamp",  "Revenue"]);
-            for (var j = 0; j < d[0].length; j++) {
-                var date = new Date(d[0][j]);
-                massagedData.push([ date, d[1][j]]);
+                var formattedVal = "$" + (Math.round(result.Remainder * shift) / mod) + suffix;
+                comboObj.options.vAxes["0"].ticks.push({ v: step, f: formattedVal });
+                if (step > 500000) {
+                    step -= Math.pow(10, result.Magnitude) / 2;
+                } else {
+                    step = 0;
+                }
             }
-
-            var data = google.visualization.arrayToDataTable(massagedData);
 
             var date_formatter = new google.visualization.DateFormat({
                 pattern: "MMM yy"
             });
 
-            date_formatter.format(data, 0);
+            date_formatter.format(lineData, 0);
 
             var currencyFormatter = new google.visualization.NumberFormat(
                 {
@@ -119,10 +150,18 @@
                     negativeParens: true,
                     pattern: '$###,###'
                 });
-            currencyFormatter.format(data, 1),
+            currencyFormatter.format(lineData, 1);
+            currencyFormatter.format(comboData, 2);
+
+            var percentFormatter = new google.visualization.NumberFormat(
+                {
+                    pattern: '##.##%'
+                });
+
+            percentFormatter.format(comboData, 1);
 
             lineObj = {
-                data: data,
+                data: lineData,
                 options: {
                     legend: { position: 'top' },
                     width: '100%',
@@ -137,34 +176,43 @@
                         format: 'MMM yy',
                         gridlines: { count: 24 }
                     },
-                    vAxis:{
-                    format:'currency',
-                }
+                    vAxis: {
+                        format: 'currency',
+                    }
                 },
             }
 
+            comboObj.chart = new google.visualization.ComboChart(document.getElementById("combo_chart_div"));
+
             lineObj.chart = new google.visualization.LineChart(document.getElementById("line_chart_div"));
-
-            drawChartHelper(lineObj);
-
+            
             $(window).resize(function () {
+                drawChartHelper(comboObj);
                 drawChartHelper(lineObj);
             });
+
+            $(window).resize();
+
         };
 
-        InitializePage('MidwestData', callBackTwo, 1);
-        }
+        InitializePage('MidwestData', callBack, 0);
+    }
+
+    
 </script>
 
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         <h3>District Combo Chart</h3>
         <div class="chart_wrap">
             <div id="combo_chart_div" class="chart"></div>
         </div>
     </div>
-    <div class="col-md-6">
+</div>
+
+<div class="row">
+    <div class="col-md-12">
         <h3>District Line Chart</h3>
         <div class="chart_wrap">
             <div id="line_chart_div" class="chart"></div>

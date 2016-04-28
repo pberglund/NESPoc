@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using NESPoc.Models;
 
 namespace NESPoc.Controllers
 {
@@ -203,181 +204,101 @@ namespace NESPoc.Controllers
 			{
 				default:
 				case 0:
-					obj = new object[]
+
+					DistrictDto districtDto = new DistrictDto()
 					{
-						new double[]
+						District = new DistrictEntry()
 						{
-							0.007,
-							0.007,
-							0.008,
-							0.009,
-							0.008,
-							0.009,
-							0.009,
-							0.008,
-							0.009,
-							0.008,
-							0.007,
-							0.008,
-							0.008,
-							0.008,
-							0.009,
-							0.009,
-							0.008,
-							0.008,
-							0.008,
-							0.008,
-							0.008,
-							0.007,
-							0.006,
-							0.006,
+							Records = new List<DistrictObject>()
+							{
+								new DistrictObject {PercentRevenue = 0.07, Revenue = 2925987,},
+								new DistrictObject {PercentRevenue = 0.07, Revenue = 3161657,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3488980,},
+								new DistrictObject {PercentRevenue = 0.09, Revenue = 3873309,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3772323,},
+								new DistrictObject {PercentRevenue = 0.09, Revenue = 3965592,},
+								new DistrictObject {PercentRevenue = 0.09, Revenue = 4249127,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3667705,},
+								new DistrictObject {PercentRevenue = 0.09, Revenue = 3934838,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3436256,},
+								new DistrictObject {PercentRevenue = 0.07, Revenue = 2956282,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3411471,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3500552,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3622254,},
+								new DistrictObject {PercentRevenue = 0.09, Revenue = 4041303,},
+								new DistrictObject {PercentRevenue = 0.09, Revenue = 4204165,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3766098,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3835411,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3906205,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3709012,},
+								new DistrictObject {PercentRevenue = 0.08, Revenue = 3848036,},
+								new DistrictObject {PercentRevenue = 0.07, Revenue = 3385292,},
+								new DistrictObject {PercentRevenue = 0.06, Revenue = 2881898,},
+								new DistrictObject {PercentRevenue = 0.06, Revenue = 3082204,},
+							}
 						},
-						new int[]
+						Branch = new BranchEntry()
 						{
-							2925987,
-							3161657,
-							3488980,
-							3873309,
-							3772323,
-							3965592,
-							4249127,
-							3667705,
-							3934838,
-							3436256,
-							2956282,
-							3411471,
-							3500552,
-							3622254,
-							4041303,
-							4204165,
-							3766098,
-							3835411,
-							3906205,
-							3709012,
-							3848036,
-							3385292,
-							2881898,
-							3082204,
+							BranchName = "21st Century Salvage",
+							BranchRevenues = new List<BranchRevenue>()
+							{
+
+								new BranchRevenue {Date = new DateTime(2014, 4, 1).UnixTicks(), Revenue = 25095},
+								new BranchRevenue {Date = new DateTime(2014, 5, 1).UnixTicks(), Revenue = 28165},
+								new BranchRevenue {Date = new DateTime(2014, 6, 1).UnixTicks(), Revenue = 10645},
+								new BranchRevenue {Date = new DateTime(2014, 7, 1).UnixTicks(), Revenue = 57910},
+								new BranchRevenue {Date = new DateTime(2014, 8, 1).UnixTicks(), Revenue = 20030},
+								new BranchRevenue {Date = new DateTime(2014, 9, 1).UnixTicks(), Revenue = 18915},
+								new BranchRevenue {Date = new DateTime(2014, 10, 1).UnixTicks(), Revenue = 26391},
+								new BranchRevenue {Date = new DateTime(2014, 11, 1).UnixTicks(), Revenue = 25155},
+								new BranchRevenue {Date = new DateTime(2014, 12, 1).UnixTicks(), Revenue = 27811},
+								new BranchRevenue {Date = new DateTime(2015, 1, 1).UnixTicks(), Revenue = 23245},
+								new BranchRevenue {Date = new DateTime(2015, 2, 1).UnixTicks(), Revenue = 46880},
+								new BranchRevenue {Date = new DateTime(2015, 3, 1).UnixTicks(), Revenue = 30720},
+								new BranchRevenue {Date = new DateTime(2015, 4, 1).UnixTicks(), Revenue = 33695},
+								new BranchRevenue {Date = new DateTime(2015, 5, 1).UnixTicks(), Revenue = 29370},
+								new BranchRevenue {Date = new DateTime(2015, 6, 1).UnixTicks(), Revenue = 21210},
+								new BranchRevenue {Date = new DateTime(2015, 7, 1).UnixTicks(), Revenue = 48835},
+								new BranchRevenue {Date = new DateTime(2015, 8, 1).UnixTicks(), Revenue = 41680},
+								new BranchRevenue {Date = new DateTime(2015, 9, 1).UnixTicks(), Revenue = 31700},
+								new BranchRevenue {Date = new DateTime(2015, 10, 1).UnixTicks(), Revenue = 10165},
+								new BranchRevenue {Date = new DateTime(2015, 11, 1).UnixTicks(), Revenue = 10165},
+								new BranchRevenue {Date = new DateTime(2015, 12, 1).UnixTicks(), Revenue = 17760},
+								new BranchRevenue {Date = new DateTime(2016, 1, 1).UnixTicks(), Revenue = 5060},
+								new BranchRevenue {Date = new DateTime(2016, 2, 1).UnixTicks(), Revenue = 4515},
+								new BranchRevenue {Date = new DateTime(2016, 3, 1).UnixTicks(), Revenue = 2700},
+							}
 						}
 					};
 
-					data = obj;
+					data = districtDto;
 
-					break;
-				case 1:
-					obj = new object[]
-					{
-						new double[]
-						{
-							new DateTime(2014, 4, 1).UnixTicks(),
-							new DateTime(2014, 5, 1).UnixTicks(),
-							new DateTime(2014, 6, 1).UnixTicks(),
-							new DateTime(2014, 7, 1).UnixTicks(),
-							new DateTime(2014, 8, 1).UnixTicks(),
-							new DateTime(2014, 9, 1).UnixTicks(),
-							new DateTime(2014, 10, 1).UnixTicks(),
-							new DateTime(2014, 11, 1).UnixTicks(),
-							new DateTime(2014, 12, 1).UnixTicks(),
-							new DateTime(2015, 1, 1).UnixTicks(),
-							new DateTime(2015, 2, 1).UnixTicks(),
-							new DateTime(2015, 3, 1).UnixTicks(),
-							new DateTime(2015, 4, 1).UnixTicks(),
-							new DateTime(2015, 5, 1).UnixTicks(),
-							new DateTime(2015, 6, 1).UnixTicks(),
-							new DateTime(2015, 7, 1).UnixTicks(),
-							new DateTime(2015, 8, 1).UnixTicks(),
-							new DateTime(2015, 9, 1).UnixTicks(),
-							new DateTime(2015, 10, 1).UnixTicks(),
-							new DateTime(2015, 11, 1).UnixTicks(),
-							new DateTime(2015, 12, 1).UnixTicks(),
-							new DateTime(2016, 1, 1).UnixTicks(),
-							new DateTime(2016, 2, 1).UnixTicks(),
-							new DateTime(2016, 3, 1).UnixTicks(),
-
-						},
-						new int[]
-						{
-							25095,
-							28165,
-							10645,
-							57910,
-							20030,
-							18915,
-							26391,
-							25155,
-							27811,
-							23245,
-							46880,
-							30720,
-							33695,
-							29370,
-							21210,
-							48835,
-							41680,
-							31700,
-							10165,
-							10165,
-							17760,
-							5060,
-							4515,
-							2700,
-						}
-					};
-
-					data = obj;
 					break;
 				case 2:
-					obj = new object[]
+					BranchDto dto = new BranchDto()
 					{
-						new string[]
+						CompanyName = "21st Century Salvage",
+						BranchRecords = new List<BranchRecord>()
 						{
-							"B052",
-							"B057",
-							"B063",
-							"B068",
-							"B087",
-							"B089",
-							"B301",
-							"B307",
-							"B309",
-							"B339",
-							"Other",
-							"0",
-						},
-						new int[]
-						{
-							0,
-							7595,
-							0,
-							0,
-							0,
-							0,
-							0,
-							0,
-							0,
-							249260,
-							0,
-							0,
-						},
-						new int[]
-						{
-							0,
-							65602,
-							0,
-							10205,
-							0,
-							0,
-							0,
-							0,
-							0,
-							240060,
-							0,
-							0,
+							new BranchRecord() {BranchName = "B052", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B057", PreviousYearRevenue = 7595, CurrentYearRevenue = 65602,},
+							new BranchRecord() {BranchName = "B063", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B068", PreviousYearRevenue = 0, CurrentYearRevenue = 10205,},
+							new BranchRecord() {BranchName = "B087", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B089", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B301", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B307", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B309", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "B339", PreviousYearRevenue = 249260, CurrentYearRevenue = 240060,},
+							new BranchRecord() {BranchName = "Other", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
+							new BranchRecord() {BranchName = "0", PreviousYearRevenue = 0, CurrentYearRevenue = 0,},
 						}
+
 					};
-					data = obj;
+					data = dto;
 					break;
 				case 3:
+
 					#region Case 3
 
 					obj = new object[]
@@ -1236,6 +1157,7 @@ namespace NESPoc.Controllers
 					data = obj;
 
 					#endregion
+
 					break;
 			}
 
