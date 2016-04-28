@@ -1,0 +1,267 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/Scripts/GoogleHelpers.js"></script>
+<script type="text/javascript">
+
+    var barObj = null;
+    var chartObjs = [];
+
+    var defaultLineOptions =
+                {
+                    ticks: [
+                           0,
+                           10000,
+                           20000,
+                           30000,
+                           40000,
+                           50000,
+                           60000,
+                           70000
+                    ],
+                    legend: { position: 'top' },
+                    width: '100%',
+                    height: '100%',
+                    trendlines: {
+                        0: {
+                            color: "black",
+                        }
+                    },
+                    hAxis: {
+                        slantedText: false,
+                        showTextEvery: 1,
+                        //slantedTextAngle: 45,
+                        viewWindow: {
+                            min: 0,
+                            max: 24
+                        },
+                        //ticks:[],
+                        //format: "MMM yyyy",
+                    },
+                };
+
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var months = ["Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "May",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec"
+        ];
+
+        var callBack = function (d) {
+
+            
+            var currencyFormatter = new google.visualization.NumberFormat(
+                {
+                    pattern: '$###,###'
+                });
+            for (var i = 0; i < d.length; i++) {
+
+                var branchValues = [];
+
+                branchValues.push(["Date", "BranchValue"]);
+
+                var obj = d[i];
+                var date = new Date(obj.Date);
+
+                var year = date.getFullYear();
+                var month = date.getMonth();
+                $("#branch_chart_year_" + i).html(year);
+                $("#branch_chart_month_" +i).html(months[month]);
+                $("#branch_chart_dist_" + i).html(roundedToFixed(obj.DistrictPercentage, 1) + "%");
+                $("#branch_chart_cust_" + i).html(roundedToFixed(obj.CustomerPercentage, 1) + "%");
+                $("#branch_chart_diff_" + i).html(roundedToFixed(obj.PercentageDifference, 1) + "%");
+                var branchSlope = TrendLineSlope(null, obj.BranchValues);
+                $("#branch_chart_branch_slope_" + i).html(roundedToFixed(branchSlope, 3));
+                var districtSlope = TrendLineSlope(null, obj.DistrictValues);
+                $("#branch_chart_dist_slope_" + i).html(roundedToFixed(districtSlope, 3));
+                
+                for (var j = 0; j < obj.BranchValues.length; j++) {
+                    var branchValue = obj.BranchValues[j];
+
+                    branchValues.push([j, branchValue]);
+                }
+                
+                var branchData = google.visualization.arrayToDataTable(branchValues);
+
+                currencyFormatter.format(branchData, 1);
+
+                var date_formatter = new google.visualization.DateFormat({
+                    pattern: "MMM yyyy"
+                });
+
+                var newOptions = goclone(defaultLineOptions);
+                
+                newOptions.hAxis.ticks = [];
+
+                for (var k = 0; k < branchData.getNumberOfRows(); k++) {
+                    var monthVal = date.getMonth() - k;
+
+                    var newDate = new Date(date.getFullYear(), monthVal, 1);
+
+                    var formattedVal = date_formatter.formatValue(newDate);
+                    
+                    newOptions.hAxis.ticks.push({ v: k, f: formattedVal });
+
+                    branchData.setFormattedValue(k, 0, formattedVal);
+                }
+
+                //currencyFormatter.format(branchData, 1);    
+
+                chartObjs.push({
+                    chart: new google.visualization.LineChart(document.getElementById("branch_chart_div_" + i)),
+                    data: branchData,
+                    options: newOptions,
+                });
+            }
+
+                $(window).resize(function () {
+                    for (var i = 0; i < chartObjs.length; i++) {
+                        var chartObj = chartObjs[i];
+                        drawChartHelper(chartObj);
+                        }
+                });
+            $(window).resize();
+        };
+
+        InitializePage('MidwestData', callBack, 3);
+    }
+
+    function goclone(source) {
+        if (Object.prototype.toString.call(source) === '[object Array]') {
+            var clone = [];
+            for (var i = 0; i < source.length; i++) {
+                clone[i] = goclone(source[i]);
+            }
+            return clone;
+        } else if (typeof (source) == "object") {
+            var clone = {};
+            for (var prop in source) {
+                if (source.hasOwnProperty(prop)) {
+                    clone[prop] = goclone(source[prop]);
+                }
+            }
+            return clone;
+        } else {
+            return source;
+        }
+    }
+
+    function CreateChartObject(data, options) {
+        var obj = {
+            data: data,
+            options: options
+        };
+        return obj;
+    };
+
+    function roundedToFixed(_float, _digits) {
+        var rounder = Math.pow(10, _digits);
+        return (Math.round(_float * rounder) / rounder).toFixed(_digits);
+    }
+
+    function TrendLineSlope(xValues, yValues) {
+
+        if (yValues == null) {
+            return 0;
+        }
+
+        if (xValues != null && ( xValues.length != yValues.length)) {
+            return 0;
+        }
+
+        if (xValues == null) {
+            xValues = [];
+            for (var j = 0; j < yValues.length; j++) {
+                xValues.push(j);
+            }
+        }
+
+        var xAvg = 0;
+        var yAvg = 0;
+ 
+        for (var i = 0; i < xValues.length; i++)
+        {
+            xAvg += i;
+            yAvg += yValues[i];
+        }
+ 
+        xAvg = xAvg / xValues.length;
+        yAvg = yAvg / yValues.length;
+ 
+    var v1 = 0;
+    var v2 = 0;
+ 
+    for (var j = 0; j < yValues.length; j++)
+    {
+        v1 += (xValues[j] - xAvg) * (yValues[j] - yAvg);
+        v2 += Math.pow(xValues[j] - xAvg, 2);
+    }
+ 
+    var a = v1 / v2;
+
+        return a;
+        //var b = yAvg - a * xAvg; //The y intercept
+    }
+
+</script>
+
+@for (var i = 0; i < 13; i++)
+{
+    string style = "background-color: " +( i % 2 == 0 ? "lightgray;" : "lightblue;");
+    <div class="row">
+        <div class="col-md-6">
+            <table width="100%" style="@style">
+                <tbody>
+                    <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Dist</th>
+                        <th>Cust</th>
+                        <th>Diff</th>
+                        <th>Branch Slope</th>
+                        <th>District Slope</th>
+                    </tr>
+                    <tr>
+                        <td id="branch_chart_year_@i" width="14.2%"></td>
+                        <td id="branch_chart_month_@i" width="14.2%"></td>
+                        <td id="branch_chart_dist_@i" width="14.2%"></td>
+                        <td id="branch_chart_cust_@i" width="14.2%"></td>
+                        <td id="branch_chart_diff_@i" width="14.2%"></td>
+                        <td id="branch_chart_branch_slope_@i" width="14.2%"></td>
+                        <td id="branch_chart_dist_slope_@i" width="14.2%"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="chart_wrap">
+                <div id="branch_chart_div_@i" class="chart"></div>
+            </div>
+        </div>
+    </div>
+        @*<div class="row">
+            <div class="col-md-12">
+                <div class="chart_wrap">
+                    <div id="district_chart_div_@i" class="chart"></div>
+                </div>
+            </div>
+        </div>*@
+}

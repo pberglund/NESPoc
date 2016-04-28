@@ -1,0 +1,192 @@
+﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="~/Scripts/GoogleHelpers.js"></script>
+<script type="text/javascript">
+
+    var barObj = null;
+    var chartObjs = [];
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+        var defaultLineOptions =
+                {
+                    legend: { position: 'top' },
+                    width: '100%',
+                    height: '100%',
+                    //trendlines: {
+                    //    0: {
+                    //        color: "black",
+                    //    }
+                    //}
+                };
+
+
+        var districtOptions = merge_options({
+            //ticks: [
+            //    0,
+            //    500000,
+            //    1000000,
+            //    1500000,
+            //    2000000,
+            //    2500000,
+            //    3000000,
+            //    3500000,
+            //    4000000,
+            //    4500000
+            //]
+        }, defaultLineOptions);
+
+        var callBack = function (d) {
+            var dataValues = [];
+
+            dataValues.push(["Date", "DistrictValue",
+                //{ type: 'string', role: 'annotation' },
+                "BranchValue",
+                //{ type: 'string', role: 'annotation' }
+            ]);
+
+            for (var j = 0; j < d.length; j++) {
+
+                var obj = d[j];
+                var date = new Date(obj.Date);
+                
+                dataValues.push(
+                    [
+                        date,
+                        obj.DistrictPercentage,
+                        //roundedToFixed(obj.DistrictPercentage, 1) + "%",
+                        obj.CustomerPercentage,
+                        //roundedToFixed(obj.CustomerPercentage, 1) + "%"
+                    ]
+                    );
+
+                }
+               
+            var data = google.visualization.arrayToDataTable(dataValues);
+
+            var date_formatter = new google.visualization.DateFormat({
+                pattern: "MMM yyyy"
+            });
+            date_formatter.format(data, 0);
+
+            var districtObj = {
+                data: data,
+                options: districtOptions
+            }
+
+            districtObj.chart = new google.visualization.LineChart(document.getElementById("timeline_chart_div"));
+
+            chartObjs.push(districtObj);
+
+            $(window).resize(function () {
+                for (var i = 0; i < chartObjs.length; i++) {
+                    var chartObj = chartObjs[i];
+                    drawChartHelper(chartObj);
+                }
+            });
+            $(window).resize();
+
+        };
+
+        InitializePage('MidwestData', callBack, 3);
+    }
+
+    function CalculateTrendlineSlope(xValues, yValues) {
+
+        if (yValues == null) {
+            return 0;
+        }
+
+        if (xValues != null && ( xValues.length != yValues.length)) {
+            return 0;
+        }
+
+        var a = null;
+        var b = null;
+        var c = null;
+        var d = null;
+        var n = yValues.length;
+
+        if (xValues == null) {
+            xValues = [];
+            for (var j = 0; j < yValues.length; j++) {
+                xValues.push(j);
+            }
+        }
+        
+        var aSum = 0;
+        var bSumX = 0;
+        var bSumY = 0;
+        var cSumSquareX = 0;
+        for (var i = 0; i < yValues.length; i++) {
+            var x = xValues[i];
+            var y = yValues[i];
+            aSum += x * y;
+            bSumX += x;
+            bSumY += y;
+            cSumSquareX += Math.pow(i, 2);
+        }
+
+        a = n * aSum;
+        b = bSumX * bSumY;
+        c = n * cSumSquareX;
+        d = Math.pow(bSumX, 2);
+
+        var m = (a - b) / (c - d);
+        return m;
+    }
+
+    function roundedToFixed(_float, _digits) {
+        var rounder = Math.pow(10, _digits);
+        return (Math.round(_float * rounder) / rounder).toFixed(_digits) + 0;
+    }
+
+</script>
+
+
+
+    @*<div class="row">
+        <div class="col-md-6">
+            <table width="100%" style="">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Dist</th>
+                        <th>Cust</th>
+                        <th>Diff</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="branch_chart_year_@i" width="20%"></td>
+                        <td id="branch_chart_month_@i" width="20%"></td>
+                        <td id="branch_chart_dist_@i" width="20%"></td>
+                        <td id="branch_chart_cust_@i" width="20%"></td>
+                        <td id="branch_chart_diff_@i" width="20%"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>*@
+
+    @*<div class="row">
+        <div class="col-md-12">
+            <div class="chart_wrap">
+                <div id="branch_chart_div_@i" class="chart"></div>
+            </div>
+        </div>
+    </div>*@
+        <div class="row">
+            <div class="col-md-12">
+                <div class="chart_wrap">
+                    <div id="timeline_chart_div" class="chart"></div>
+                </div>
+            </div>
+        </div>
