@@ -61,7 +61,9 @@ function ConfigureCharts(opts) {
     }
 }
 
-
+function createDataTable(dataVals) {
+    return google.visualization.arrayToDataTable(dataVals);
+}
 function formatCurrencyValue(value) {
     return format(0, null, null, value);
 }

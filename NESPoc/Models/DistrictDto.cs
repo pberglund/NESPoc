@@ -8,7 +8,7 @@ namespace NESPoc.Models
 	public class DistrictDto
 	{
 		public DistrictEntry District { get; set; }
-		public BranchEntry Branch { get; set; }
+		public CompanyEntry Company { get; set; }
 	}
 
 	public class DistrictEntry
@@ -21,14 +21,14 @@ namespace NESPoc.Models
 		public int Revenue { get; set; }
 	}
 
-	public class BranchEntry
+	public class CompanyEntry
 	{
-		public string BranchName { get; set; }
+		public string CompanyName { get; set; }
 
-		public List<BranchRevenue> BranchRevenues { get; set; }
+		public List<CompanyRevenue> CompanyRevenues { get; set; }
 	}
 
-	public class BranchRevenue
+	public class CompanyRevenue
 	{
 		public double Date { get; set; }
 		public int Revenue { get; set; }

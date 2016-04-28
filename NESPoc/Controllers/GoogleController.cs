@@ -237,36 +237,36 @@ namespace NESPoc.Controllers
 								new DistrictObject {PercentRevenue = 0.06, Revenue = 3082204,},
 							}
 						},
-						Branch = new BranchEntry()
+						Company = new CompanyEntry()
 						{
-							BranchName = "21st Century Salvage",
-							BranchRevenues = new List<BranchRevenue>()
+							CompanyName = "21st Century Salvage",
+							CompanyRevenues = new List<CompanyRevenue>()
 							{
 
-								new BranchRevenue {Date = new DateTime(2014, 4, 1).UnixTicks(), Revenue = 25095},
-								new BranchRevenue {Date = new DateTime(2014, 5, 1).UnixTicks(), Revenue = 28165},
-								new BranchRevenue {Date = new DateTime(2014, 6, 1).UnixTicks(), Revenue = 10645},
-								new BranchRevenue {Date = new DateTime(2014, 7, 1).UnixTicks(), Revenue = 57910},
-								new BranchRevenue {Date = new DateTime(2014, 8, 1).UnixTicks(), Revenue = 20030},
-								new BranchRevenue {Date = new DateTime(2014, 9, 1).UnixTicks(), Revenue = 18915},
-								new BranchRevenue {Date = new DateTime(2014, 10, 1).UnixTicks(), Revenue = 26391},
-								new BranchRevenue {Date = new DateTime(2014, 11, 1).UnixTicks(), Revenue = 25155},
-								new BranchRevenue {Date = new DateTime(2014, 12, 1).UnixTicks(), Revenue = 27811},
-								new BranchRevenue {Date = new DateTime(2015, 1, 1).UnixTicks(), Revenue = 23245},
-								new BranchRevenue {Date = new DateTime(2015, 2, 1).UnixTicks(), Revenue = 46880},
-								new BranchRevenue {Date = new DateTime(2015, 3, 1).UnixTicks(), Revenue = 30720},
-								new BranchRevenue {Date = new DateTime(2015, 4, 1).UnixTicks(), Revenue = 33695},
-								new BranchRevenue {Date = new DateTime(2015, 5, 1).UnixTicks(), Revenue = 29370},
-								new BranchRevenue {Date = new DateTime(2015, 6, 1).UnixTicks(), Revenue = 21210},
-								new BranchRevenue {Date = new DateTime(2015, 7, 1).UnixTicks(), Revenue = 48835},
-								new BranchRevenue {Date = new DateTime(2015, 8, 1).UnixTicks(), Revenue = 41680},
-								new BranchRevenue {Date = new DateTime(2015, 9, 1).UnixTicks(), Revenue = 31700},
-								new BranchRevenue {Date = new DateTime(2015, 10, 1).UnixTicks(), Revenue = 10165},
-								new BranchRevenue {Date = new DateTime(2015, 11, 1).UnixTicks(), Revenue = 10165},
-								new BranchRevenue {Date = new DateTime(2015, 12, 1).UnixTicks(), Revenue = 17760},
-								new BranchRevenue {Date = new DateTime(2016, 1, 1).UnixTicks(), Revenue = 5060},
-								new BranchRevenue {Date = new DateTime(2016, 2, 1).UnixTicks(), Revenue = 4515},
-								new BranchRevenue {Date = new DateTime(2016, 3, 1).UnixTicks(), Revenue = 2700},
+								new CompanyRevenue {Date = new DateTime(2014, 4, 1).UnixTicks(), Revenue = 25095},
+								new CompanyRevenue {Date = new DateTime(2014, 5, 1).UnixTicks(), Revenue = 28165},
+								new CompanyRevenue {Date = new DateTime(2014, 6, 1).UnixTicks(), Revenue = 10645},
+								new CompanyRevenue {Date = new DateTime(2014, 7, 1).UnixTicks(), Revenue = 57910},
+								new CompanyRevenue {Date = new DateTime(2014, 8, 1).UnixTicks(), Revenue = 20030},
+								new CompanyRevenue {Date = new DateTime(2014, 9, 1).UnixTicks(), Revenue = 18915},
+								new CompanyRevenue {Date = new DateTime(2014, 10, 1).UnixTicks(), Revenue = 26391},
+								new CompanyRevenue {Date = new DateTime(2014, 11, 1).UnixTicks(), Revenue = 25155},
+								new CompanyRevenue {Date = new DateTime(2014, 12, 1).UnixTicks(), Revenue = 27811},
+								new CompanyRevenue {Date = new DateTime(2015, 1, 1).UnixTicks(), Revenue = 23245},
+								new CompanyRevenue {Date = new DateTime(2015, 2, 1).UnixTicks(), Revenue = 46880},
+								new CompanyRevenue {Date = new DateTime(2015, 3, 1).UnixTicks(), Revenue = 30720},
+								new CompanyRevenue {Date = new DateTime(2015, 4, 1).UnixTicks(), Revenue = 33695},
+								new CompanyRevenue {Date = new DateTime(2015, 5, 1).UnixTicks(), Revenue = 29370},
+								new CompanyRevenue {Date = new DateTime(2015, 6, 1).UnixTicks(), Revenue = 21210},
+								new CompanyRevenue {Date = new DateTime(2015, 7, 1).UnixTicks(), Revenue = 48835},
+								new CompanyRevenue {Date = new DateTime(2015, 8, 1).UnixTicks(), Revenue = 41680},
+								new CompanyRevenue {Date = new DateTime(2015, 9, 1).UnixTicks(), Revenue = 31700},
+								new CompanyRevenue {Date = new DateTime(2015, 10, 1).UnixTicks(), Revenue = 10165},
+								new CompanyRevenue {Date = new DateTime(2015, 11, 1).UnixTicks(), Revenue = 10165},
+								new CompanyRevenue {Date = new DateTime(2015, 12, 1).UnixTicks(), Revenue = 17760},
+								new CompanyRevenue {Date = new DateTime(2016, 1, 1).UnixTicks(), Revenue = 5060},
+								new CompanyRevenue {Date = new DateTime(2016, 2, 1).UnixTicks(), Revenue = 4515},
+								new CompanyRevenue {Date = new DateTime(2016, 3, 1).UnixTicks(), Revenue = 2700},
 							}
 						}
 					};

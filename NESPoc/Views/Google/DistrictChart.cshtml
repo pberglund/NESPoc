@@ -25,16 +25,18 @@
 
                     var d = obj.data;
 
+                    $("#companyName").html(d.Company.CompanyName);
+
                     var districtObj = d.District;
-                    var branchObj = d.Branch;
+                    var companyObj = d.Company;
 
                     var districtData = [];
-                    var branchData = [];
+                    var companyData = [];
 
                     //var totalMinDistrict = 0;
                     var totalMaxDistrict = 0;
-                    //var totalMinBranch = 0;
-                    var totalMaxBranch = 0;
+                    //var totalMinCompany = 0;
+                    var totalMaxCompany = 0;
 
                     districtData.push(["Index", "Percent", "Revenue"]);
                     for (var j = 0; j < districtObj.Records.length; j++) {
@@ -48,18 +50,18 @@
                         districtData.push([j, percent, revenue]);
                     }
 
-                    branchData.push(["Timestamp", "Revenue"]);
-                    for (var j = 0; j < branchObj.BranchRevenues.length; j++) {
-                        var date = new Date(branchObj.BranchRevenues[j].Date);
-                        var branchRevenue = branchObj.BranchRevenues[j].Revenue;
+                    companyData.push(["Timestamp", "Revenue"]);
+                    for (var j = 0; j < companyObj.CompanyRevenues.length; j++) {
+                        var date = new Date(companyObj.CompanyRevenues[j].Date);
+                        var CompanyRevenue = companyObj.CompanyRevenues[j].Revenue;
 
-                        //totalMinBranch = Math.min(totalMinBranch, branchRevenue);
-                        totalMaxBranch = Math.max(totalMaxBranch, branchRevenue);
-                        branchData.push([date, branchRevenue]);
+                        //totalMinCompany = Math.min(totalMinCompany, CompanyRevenue);
+                        totalMaxCompany = Math.max(totalMaxCompany, CompanyRevenue);
+                        companyData.push([date, CompanyRevenue]);
                     }
 
-                    var comboData = google.visualization.arrayToDataTable(districtData);
-                    var lineData = google.visualization.arrayToDataTable(branchData);
+                    var comboData = createDataTable(districtData);
+                    var lineData = createDataTable(companyData);
                     return {
                         dataTables: [comboData, lineData],
                         totalMaxDistrict: totalMaxDistrict,
@@ -209,7 +211,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h3>District Line Chart</h3>
+        <h3 id="companyName"></h3>
         <div class="chart_wrap">
             <div id="line_chart_div" class="chart"></div>
         </div>

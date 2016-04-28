@@ -54,7 +54,7 @@
                         massagedData.push([branch, currYearVal, currAnnotation, prevYearVal, prevAnnotation]);
                     }
 
-                    var data = google.visualization.arrayToDataTable(massagedData);
+                    var data = createDataTable(massagedData);
                     return {
                         dataTables: [data],
                         totalMin: totalMin,
