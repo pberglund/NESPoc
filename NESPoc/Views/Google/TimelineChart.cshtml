@@ -141,7 +141,7 @@
 
         };
 
-        InitializePage('MidwestData', callBack, 3);
+        InitializePage('MidwestData', callBack, { type: 3 });
     }
 
     function roundedToFixed(_float, _digits) {
@@ -151,7 +151,7 @@
 
 </script>
 
-@for (int i = 0; i < 8; i++)
+@for (int i = 0; i < 13; i++)
 {
     string style = "background-color: " +( i % 2 == 0 ? "lightgray;" : "lightblue;");
     <div class="row">
