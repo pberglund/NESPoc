@@ -1,18 +1,17 @@
-﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="~/Scripts/GoogleHelpers.js"></script>
-<script type="text/javascript">
-    // Load the Visualization API and the corechart package.
-    google.charts.load('current', { 'packages': ['corechart'] });
+﻿<script type="text/javascript">
 
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawChart);
+    LoadGoogleCharts(drawChart);
 
     function drawChart() {
 
         var chartOptions = [
             {
-                method: "MidwestData",
-                type: 0,
+                method: "DistrictChartData",
+                urlParams: {
+                    districtId: 0,
+                    companyId: 0,
+                    startDateTime: "2016-04-01",
+                },
                 mainManipulation: function (obj) {
 
                     var d = obj.data;
@@ -25,21 +24,19 @@
                     var districtData = [];
                     var companyData = [];
 
-                    //var totalMinDistrict = 0;
                     var totalMaxDistrict = 0;
-                    //var totalMinCompany = 0;
                     var totalMaxCompany = 0;
 
-                    districtData.push(["Index", "Percent", "Revenue"]);
+                    districtData.push(["Timestamp", "Percent", "Revenue"]);
                     for (var j = 0; j < districtObj.Records.length; j++) {
 
+                        var districtDate = new Date(districtObj.Records[j].Date);
                         var percent = districtObj.Records[j].PercentRevenue / 10;
                         var revenue = districtObj.Records[j].Revenue;
 
-                        //totalMinDistrict = Math.min(totalMinDistrict, revenue);
                         totalMaxDistrict = Math.max(totalMaxDistrict, revenue);
 
-                        districtData.push([j, percent, revenue]);
+                        districtData.push([districtDate, percent, revenue]);
                     }
 
                     companyData.push(["Timestamp", "Revenue"]);
@@ -47,7 +44,6 @@
                         var date = new Date(companyObj.CompanyRevenues[j].Date);
                         var companyRevenue = companyObj.CompanyRevenues[j].Revenue;
 
-                        //totalMinCompany = Math.min(totalMinCompany, CompanyRevenue);
                         totalMaxCompany = Math.max(totalMaxCompany, companyRevenue);
                         companyData.push([date, companyRevenue]);
                     }
@@ -57,13 +53,15 @@
                     return {
                         dataTables: [comboData, lineData],
                         totalMaxDistrict: totalMaxDistrict,
-                        
+                        totalMaxCompany: totalMaxCompany,
+
                     }
                 },
                 postProcessing: function (obj) {
                     var comboData = obj.dataTables[0];
                     var lineData = obj.dataTables[1];
                     var totalMaxDistrict = obj.totalMaxDistrict;
+                    var totalMaxCompany = obj.totalMaxCompany;
 
                     var comboObj = {
                         chartType: "ComboChart",
@@ -74,7 +72,7 @@
                             height: '100%',
                             trendlines: {
                                 0: {
-                                    color: 'red',
+                                    color: 'black',
                                     tooltip: false,
                                 },
                                 1: {
@@ -107,54 +105,27 @@
                             },
                             colors: ["red", "blue"],
                             hAxis: {
+                                format: 'MMM yy',
                                 showTextEvery: 1,
                                 gridlines: { count: 24 }
                             },
                         },
                     }
 
-                    var magnitude = GetMagnitude(totalMaxDistrict).Magnitude;
+                    var ticks = GetCurrencyTicks(totalMaxDistrict);
+                    comboObj.options.vAxes["0"].ticks = ticks;
 
-                    var bench = Math.pow(10, magnitude);
+                    var dateFormat = 'MMM yy';
 
-                    var step = Math.ceil(totalMaxDistrict / bench) * bench;
+                    formatDate(comboData, 0, dateFormat);
+                    formatDate(lineData, 0, dateFormat);
 
-                    while (step > 0) {
-                        var val = step;
-                        var suffix;
-                        var result = GetMagnitude(val);
-                        switch (result.Magnitude) {
-                            case 5:
-                                suffix = 'K';
-                                break;
-                            case 6:
-                                suffix = 'M';
-                                break;
-                            default:
-                                suffix = '';
-                        }
-
-                        var shift = 10;
-                        var mod = 10;
-
-                        if (step < 1000000) {
-                            shift = 100;
-                            mod = 1;
-                        }
-
-                        var formattedVal = "$" + (Math.round(result.Remainder * shift) / mod) + suffix;
-                        comboObj.options.vAxes["0"].ticks.push({ v: step, f: formattedVal });
-                        if (step > 500000) {
-                            step -= Math.pow(10, result.Magnitude) / 2;
-                        } else {
-                            step = 0;
-                        }
-                    }
-                    
-                    formatCurrency(lineData, 1);
-                    formatCurrency(comboData, 2);
                     formatPercentage(comboData, 1);
-                    formatDate(lineData, 0);
+                    formatCurrency(lineData, 1);
+
+                    formatCurrency(comboData, 2);
+                    
+                    
 
                     var lineObj = {
                         chartType: "LineChart",
@@ -180,6 +151,9 @@
                         },
                     }
 
+                    var companyTicks = GetCurrencyTicks(totalMaxCompany);
+                    lineObj.options.vAxis.ticks = companyTicks;
+
                     return [comboObj, lineObj];
                 }
             }
@@ -187,9 +161,10 @@
         ConfigureCharts(chartOptions);
     }
 
-    
+
 </script>
 
+@Html.Partial("_GoogleDependencies", new ViewDataDictionary { { "function", "drawChart" } })
 
 <div class="row">
     <div class="col-md-12">

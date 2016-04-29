@@ -19,6 +19,7 @@ namespace NESPoc.Models
 	{
 		public double PercentRevenue { get; set; }
 		public int Revenue { get; set; }
+		public double Date { get; set; }
 	}
 
 	public class CompanyEntry

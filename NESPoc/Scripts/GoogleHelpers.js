@@ -1,4 +1,16 @@
-﻿function InitializePage(method, callBackFunc, options) {
+﻿function LoadGoogleCharts(callback) {
+
+    if (callback == null) {
+        return;
+    }
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(callback);
+}
+function InitializePage(method, callBackFunc, options) {
 
     var opts = options || {};
 
@@ -31,9 +43,23 @@ function ConfigureCharts(opts) {
 
         var action = options["method"] || 'GraphData';
 
-        var t = '?type=' + (options["type"] || 0);
+        var urlParams = options["urlParams"] || {};
 
-        var url = baseUrl + action + t;
+        var paramString = "";
+        for (var property in urlParams) {
+            if (urlParams.hasOwnProperty(property)) {
+
+                if (paramString == "") {
+                    paramString += "?";
+                } else {
+                    paramString += "&";
+                }
+                
+                paramString += property + "=" + urlParams[property];
+            }
+        }
+
+        var url = baseUrl + action + paramString;
 
         $.post(url).done(function (d) {
             var preProcessing = options["preProcessing"] || function(raw) { return { data: raw };};
@@ -58,6 +84,122 @@ function ConfigureCharts(opts) {
                 $(window).resize();
             }
         });
+    }
+}
+
+function GetCurrencyTicks(value, lowerLimit, halfStep) {
+    var ticks = [];
+
+    var divisor = halfStep ? 2 : 1;
+
+    var magnitude = GetMagnitude(value).Magnitude;
+
+    var step = GetMagnitudeNextStep(value);
+
+    var lower = lowerLimit || Math.pow(10, magnitude - 1) * 5;
+
+    while (step > 0) {
+        var val = step;
+        var suffix;
+        var result = GetMagnitude(val);
+        var shift = 10;
+        var mod = 10;
+        var useFormatter = false;
+        switch (result.Magnitude) {
+            case 1:
+                suffix = '';
+                shift = 10;
+                mod = 1;
+                break;
+            case 2:
+                suffix = '';
+                shift = 100;
+                mod = 1;
+                break;
+            case 3:
+                suffix = 'K';
+                break;
+            case 4:
+                suffix = 'K';
+                shift = 10;
+                mod = 1;
+                break;
+            case 5:
+                suffix = 'K';
+                shift = 100;
+                mod = 1;
+                break;
+            case 6:
+                suffix = 'M';
+                break;
+            case 7:
+                suffix = 'M';
+                shift = 10;
+                mod = 1;
+                break;
+            case 8:
+                suffix = 'M';
+                shift = 100;
+                mod = 1;
+                break;
+            case 9:
+                suffix = 'B';
+                break;
+            default:
+                // If we dont have a case, just restore it to the magnitude without suffix
+                shift = Math.pow(10, magnitude);
+                mod = 1;
+                suffix = '';
+                useFormatter = true;
+        }
+
+        var newVal = (Math.round(result.Remainder * shift) / mod);
+        var finalForm;
+        if (useFormatter) {
+            finalForm = formatCurrencyValue(newVal, GetCurrencyPattern(magnitude));
+        } else {
+            finalForm = "$" + newVal + suffix;
+        }
+        
+
+        ticks.push({ v: step, f: finalForm });
+        if (step > lower && result.Magnitude >= 3) {
+            step -= Math.pow(10, result.Magnitude) / divisor;
+        } else {
+            step = 0;
+        }
+    }
+
+    return ticks;
+}
+
+function GetCurrencyPattern(magnitude) {
+    var val = "";
+    for (var i = 0; i < magnitude; i++) {
+        if (i > 0 && i % 3 == 0) {
+            val = "," + val;
+        }
+        val = "#" + val;
+    }
+
+    return "$" + val;
+}
+
+function GetMagnitudeNextStep(value) {
+    var magnitude = GetMagnitude(value).Magnitude;
+
+    var bench = Math.pow(10, magnitude);
+
+    var step = Math.ceil(value / bench) * bench;
+
+    return step;
+}
+
+function getByValue(arr, prop, value) {
+
+    for (var i=0, iLen=arr.length; i<iLen; i++) {
+
+        if (arr[i][prop] == value) return arr[i];
     }
 }
 
@@ -229,5 +371,5 @@ function TrendLineSlope(xValues, yValues) {
     var a = v1 / v2;
 
     return a;
-    //var b = yAvg - a * xAvg; //The y intercept
+    //var b = yAvg - a * xAvg; //The y varercept
 }

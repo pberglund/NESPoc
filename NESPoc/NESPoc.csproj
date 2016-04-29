@@ -232,6 +232,7 @@
     <Content Include="Views\Google\TimelineChart.cshtml" />
     <Content Include="Views\Google\TrendlineTimelineChart.cshtml" />
     <Content Include="Views\Google\TimelineBranchChart.cshtml" />
+    <Content Include="Views\Google\_GoogleDependencies.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,22 +1,13 @@
-﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="~/Scripts/GoogleHelpers.js"></script>
-<script type="text/javascript">
-
-    var barObj = null;
-
-
-    // Load the Visualization API and the corechart package.
-    google.charts.load('current', { 'packages': ['corechart'] });
-
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawChart);
+﻿<script type="text/javascript">
 
     function drawChart() {
         
         var chartOptions = [
             {
-                method: "MidwestData",
-                type: 2,
+                method: "BranchChartData",
+                urlParams: {
+                    companyId: 0,
+                },
                 mainManipulation: function(obj) {
 
                     var d = obj.data;
@@ -30,7 +21,6 @@
 
                     $("#companyName").html(d.CompanyName);
 
-                    var totalMin = 0;
                     var totalMax = 0;
 
                     for (var j = 0; j < d.BranchRecords.length; j++) {
@@ -39,7 +29,6 @@
                         var currYearVal = d.BranchRecords[j].CurrentYearRevenue;
                         var prevYearVal = d.BranchRecords[j].PreviousYearRevenue;
 
-                        totalMin = Math.min(totalMin, currYearVal, prevYearVal);
                         totalMax = Math.max(totalMax, currYearVal, prevYearVal);
 
                         var currAnnotation = null;
@@ -57,7 +46,6 @@
                     var data = createDataTable(massagedData);
                     return {
                         dataTables: [data],
-                        totalMin: totalMin,
                         totalMax: totalMax,
                     }
                 },
@@ -77,7 +65,7 @@
                             orientation: "horizontal",
                             vAxis: {
                                 format: 'currency',
-                                minValue: obj.totalMin,
+                                minValue: 0,
                                 maxValue: obj.totalMax,
                             },
                             colors: ["blue", "red"],
@@ -93,7 +81,7 @@
         ConfigureCharts(chartOptions);
     }
 </script>
-
+@Html.Partial("_GoogleDependencies", new ViewDataDictionary { { "function", "drawChart" } })
 
 <div class="row">
     <div class="col-md-12">
