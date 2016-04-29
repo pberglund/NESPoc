@@ -64,10 +64,6 @@
         var callBack = function (d) {
 
             
-            var currencyFormatter = new google.visualization.NumberFormat(
-                {
-                    pattern: '$###,###'
-                });
             for (var i = 0; i < d.length; i++) {
 
                 var branchValues = [];
@@ -95,13 +91,9 @@
                     branchValues.push([j, branchValue]);
                 }
                 
-                var branchData = google.visualization.arrayToDataTable(branchValues);
+                var branchData = createDataTable(branchValues);
 
-                currencyFormatter.format(branchData, 1);
-
-                var date_formatter = new google.visualization.DateFormat({
-                    pattern: "MMM yyyy"
-                });
+                formatCurrency(branchData, 1);
 
                 var newOptions = goclone(defaultLineOptions);
                 
@@ -112,14 +104,12 @@
 
                     var newDate = new Date(date.getFullYear(), monthVal, 1);
 
-                    var formattedVal = date_formatter.formatValue(newDate);
+                    var formattedVal = formatDateValue(newDate, "MMM yyyy");
                     
                     newOptions.hAxis.ticks.push({ v: k, f: formattedVal });
 
                     branchData.setFormattedValue(k, 0, formattedVal);
                 }
-
-                //currencyFormatter.format(branchData, 1);    
 
                 chartObjs.push({
                     chart: new google.visualization.LineChart(document.getElementById("branch_chart_div_" + i)),
@@ -139,64 +129,6 @@
 
         InitializePage('MidwestData', callBack, { type: 3 });
     }
-
-    function CreateChartObject(data, options) {
-        var obj = {
-            data: data,
-            options: options
-        };
-        return obj;
-    };
-
-    function roundedToFixed(_float, _digits) {
-        var rounder = Math.pow(10, _digits);
-        return (Math.round(_float * rounder) / rounder).toFixed(_digits);
-    }
-
-    function TrendLineSlope(xValues, yValues) {
-
-        if (yValues == null) {
-            return 0;
-        }
-
-        if (xValues != null && ( xValues.length != yValues.length)) {
-            return 0;
-        }
-
-        if (xValues == null) {
-            xValues = [];
-            for (var j = 0; j < yValues.length; j++) {
-                xValues.push(j);
-            }
-        }
-
-        var xAvg = 0;
-        var yAvg = 0;
- 
-        for (var i = 0; i < xValues.length; i++)
-        {
-            xAvg += i;
-            yAvg += yValues[i];
-        }
- 
-        xAvg = xAvg / xValues.length;
-        yAvg = yAvg / yValues.length;
- 
-    var v1 = 0;
-    var v2 = 0;
- 
-    for (var j = 0; j < yValues.length; j++)
-    {
-        v1 += (xValues[j] - xAvg) * (yValues[j] - yAvg);
-        v2 += Math.pow(xValues[j] - xAvg, 2);
-    }
- 
-    var a = v1 / v2;
-
-        return a;
-        //var b = yAvg - a * xAvg; //The y intercept
-    }
-
 </script>
 
 @for (var i = 0; i < 13; i++)

@@ -95,7 +95,7 @@
 
             var massagedData = massageTooltipData(d);
 
-            var data = google.visualization.arrayToDataTable(massagedData);
+            var data = createDataTable(massagedData);
             lineObj = {
                 data: data,
                 options: lineOptions,

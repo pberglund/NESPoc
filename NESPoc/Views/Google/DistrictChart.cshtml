@@ -1,21 +1,13 @@
 ﻿<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="~/Scripts/GoogleHelpers.js"></script>
 <script type="text/javascript">
-
-    var comboObj = null;
-    var lineObj = null;
-    var lineDataVals = [];
-
-
     // Load the Visualization API and the corechart package.
     google.charts.load('current', { 'packages': ['corechart'] });
 
     // Set a callback to run when the Google Visualization API is loaded.
     google.charts.setOnLoadCallback(drawChart);
 
-
     function drawChart() {
-
 
         var chartOptions = [
             {
@@ -53,11 +45,11 @@
                     companyData.push(["Timestamp", "Revenue"]);
                     for (var j = 0; j < companyObj.CompanyRevenues.length; j++) {
                         var date = new Date(companyObj.CompanyRevenues[j].Date);
-                        var CompanyRevenue = companyObj.CompanyRevenues[j].Revenue;
+                        var companyRevenue = companyObj.CompanyRevenues[j].Revenue;
 
                         //totalMinCompany = Math.min(totalMinCompany, CompanyRevenue);
-                        totalMaxCompany = Math.max(totalMaxCompany, CompanyRevenue);
-                        companyData.push([date, CompanyRevenue]);
+                        totalMaxCompany = Math.max(totalMaxCompany, companyRevenue);
+                        companyData.push([date, companyRevenue]);
                     }
 
                     var comboData = createDataTable(districtData);
@@ -69,12 +61,11 @@
                     }
                 },
                 postProcessing: function (obj) {
-
                     var comboData = obj.dataTables[0];
                     var lineData = obj.dataTables[1];
                     var totalMaxDistrict = obj.totalMaxDistrict;
 
-                    comboObj = {
+                    var comboObj = {
                         chartType: "ComboChart",
                         elementId: "combo_chart_div",
                         data: comboData,
@@ -165,7 +156,7 @@
                     formatPercentage(comboData, 1);
                     formatDate(lineData, 0);
 
-                    lineObj = {
+                    var lineObj = {
                         chartType: "LineChart",
                         elementId: "line_chart_div",
                         data: lineData,

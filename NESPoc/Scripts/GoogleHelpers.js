@@ -64,55 +64,59 @@ function ConfigureCharts(opts) {
 function createDataTable(dataVals) {
     return google.visualization.arrayToDataTable(dataVals);
 }
-function formatCurrencyValue(value) {
-    return format(0, null, null, value);
+function formatCurrencyValue(value, pattern) {
+    return format(0, null, null, value, pattern);
 }
 
-function formatCurrency(data, col) {
-    return format(0, data, col, null);
+function formatCurrency(data, col, pattern) {
+    return format(0, data, col, null, pattern);
 }
 
-function formatPercentageValue(value) {
-    return format(1, null, null, value);
+function formatPercentageValue(value, pattern) {
+    return format(1, null, null, value, pattern);
 }
 function formatPercentage(data, col) {
     return format(1, data, col, null);
 }
 
-function formatDateValue(value) {
-    return format(2, null, null, value);
+function formatDateValue(value, pattern) {
+    return format(2, null, null, value, pattern);
 }
 
-function formatDate(data, col) {
-    return format(2, data, col, null);
+function formatDate(data, col, pattern) {
+    return format(2, data, col, null, pattern);
 }
 
-function format(type, data, col, value) {
+function format(type, data, col, value, pattern) {
 
     var formatter;
 
     switch(type) {
         case 0:
-        default :
+        default:
+
+            var currencyFormat = pattern || '$###,###';
             var currencyFormatter = new google.visualization.NumberFormat({
                 negativeColor: 'red',
                 negativeParens: true,
-                pattern: '$###,###'
+                pattern: currencyFormat
             });
             formatter = currencyFormatter;
             break;
         case 1:
+            var percentFormat = pattern || '##.##%';
             var percentFormatter = new google.visualization.NumberFormat(
                        {
-                           pattern: '##.##%'
+                           pattern: percentFormat
                        });
             formatter = percentFormatter;
             break;
         case 2:
-            var date_formatter = new google.visualization.DateFormat({
-                pattern: "MMM yy"
+            var dateFormat = pattern || "MMM yy";
+            var dateFormatter = new google.visualization.DateFormat({
+                pattern: dateFormat
             });
-            formatter = date_formatter;
+            formatter = dateFormatter;
             break;
 
     }
@@ -179,4 +183,51 @@ function goclone(source) {
     } else {
         return source;
     }
+}
+
+function roundedToFixed(_float, _digits) {
+    var rounder = Math.pow(10, _digits);
+    return (Math.round(_float * rounder) / rounder).toFixed(_digits);
+}
+
+function TrendLineSlope(xValues, yValues) {
+
+    if (yValues == null) {
+        return 0;
+    }
+
+    if (xValues != null && (xValues.length != yValues.length)) {
+        return 0;
+    }
+
+    if (xValues == null) {
+        xValues = [];
+        for (var j = 0; j < yValues.length; j++) {
+            xValues.push(j);
+        }
+    }
+
+    var xAvg = 0;
+    var yAvg = 0;
+
+    for (var i = 0; i < xValues.length; i++) {
+        xAvg += i;
+        yAvg += yValues[i];
+    }
+
+    xAvg = xAvg / xValues.length;
+    yAvg = yAvg / yValues.length;
+
+    var v1 = 0;
+    var v2 = 0;
+
+    for (var j = 0; j < yValues.length; j++) {
+        v1 += (xValues[j] - xAvg) * (yValues[j] - yAvg);
+        v2 += Math.pow(xValues[j] - xAvg, 2);
+    }
+
+    var a = v1 / v2;
+
+    return a;
+    //var b = yAvg - a * xAvg; //The y intercept
 }

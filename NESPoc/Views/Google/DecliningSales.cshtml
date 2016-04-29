@@ -81,7 +81,7 @@
 
             var massagedData = massageTooltipData(d);
 
-            var data = google.visualization.arrayToDataTable(massagedData);
+            var data = createDataTable(massagedData);
 
             lineObj = {
                 data: data,
@@ -105,7 +105,7 @@
 
             var massagedData = massageYearData(d);
 
-            var yearData = google.visualization.arrayToDataTable(massagedData);
+            var yearData = createDataTable(massagedData);
 
             lineYearObj = {
                 data: yearData,

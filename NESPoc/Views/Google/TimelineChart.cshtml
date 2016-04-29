@@ -103,8 +103,8 @@
                 }
             
 
-                var districtData = google.visualization.arrayToDataTable(districtValues);
-                var branchData = google.visualization.arrayToDataTable(branchValues);
+                var districtData = createDataTable(districtValues);
+                var branchData = createDataTable(branchValues);
 
 
                 currencyFormatter.format(districtData, 1);

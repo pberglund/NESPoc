@@ -67,12 +67,9 @@
 
                 }
                
-            var data = google.visualization.arrayToDataTable(dataValues);
+            var data = createDataTable(dataValues);
 
-            var date_formatter = new google.visualization.DateFormat({
-                pattern: "MMM yyyy"
-            });
-            date_formatter.format(data, 0);
+            formatDate(data, 0, "MMM yyyy");
 
             var districtObj = {
                 data: data,
